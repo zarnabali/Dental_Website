@@ -1,0 +1,96 @@
+"use client"
+
+import { useEffect, useRef } from "react"
+import { gsap } from "gsap"
+import { ScrollTrigger } from "gsap/ScrollTrigger"
+
+gsap.registerPlugin(ScrollTrigger)
+
+export default function FeaturedIn() {
+  const sectionRef = useRef<HTMLElement>(null)
+  const titleRef = useRef<HTMLDivElement>(null)
+  const logosRef = useRef<HTMLDivElement>(null)
+
+  const partners = [
+    { id: 1, name: "KTLA 5", src: "/partners/p1.jpg" },
+    { id: 2, name: "Angeleno", src: "/partners/p2.png" },
+    { id: 3, name: "WEHO Online", src: "/partners/p3.png" },
+    { id: 4, name: "Spa & Beauty", src: "/partners/p4.png" },
+    { id: 5, name: "WEHO Times", src: "/partners/p5.png" },
+  ]
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.gsap && (window as any).ScrollTrigger) {
+      const { gsap } = window
+      const ScrollTrigger = (window as any).ScrollTrigger
+
+      gsap.set([titleRef.current, logosRef.current], { opacity: 0, y: 20 })
+
+      gsap.to(titleRef.current, {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 85%",
+          toggleActions: "play none none reverse",
+        },
+      })
+
+      gsap.to(logosRef.current, {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 80%",
+          toggleActions: "play none none reverse",
+        },
+      })
+    }
+  }, [])
+
+  return (
+    <section ref={sectionRef} className="py-12 md:py-16" style={{ backgroundColor: "#faf9f7" }}>
+      <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-12">
+        {/* Centered divider title */}
+        <div ref={titleRef} className="flex items-center gap-6 mb-10 md:mb-12">
+          <div className="h-px flex-1" style={{ backgroundColor: "#e6e0da" }}></div>
+          <div className="text-xs md:text-sm tracking-[0.3em] uppercase font-medium" style={{ color: "#6e3b35" }}>
+            Featured In
+          </div>
+          <div className="h-px flex-1" style={{ backgroundColor: "#e6e0da" }}></div>
+        </div>
+
+        {/* Logos grid */}
+        <div
+          ref={logosRef}
+          className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8 md:gap-12 items-center"
+        >
+          {partners.map((p) => (
+            <div key={p.id} className="flex items-center justify-center">
+              <img
+                src={p.src}
+                alt={p.name}
+                className="h-12 md:h-16 lg:h-20 xl:h-24 w-auto object-contain opacity-100 transition"
+                onError={(e) => {
+                  e.currentTarget.src =
+                    "data:image/svg+xml;utf8,"
+                    +
+                    '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="40" viewBox="0 0 100 40">'
+                    + '<rect width="100" height="40" rx="6" fill="%23ededde"/>'
+                    + '<text x="50" y="26" text-anchor="middle" font-size="12" fill="%23999">Logo</text>'
+                    + '</svg>'
+                }}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+
