@@ -39,15 +39,18 @@ export default function WhyChooseUs() {
   ]
 
   useEffect(() => {
-    if (typeof window !== "undefined" && window.gsap && (window as any).ScrollTrigger) {
-      const { gsap } = window
-      const ScrollTrigger = (window as any).ScrollTrigger
+    if (
+      typeof window !== "undefined" &&
+      (window as unknown as { gsap?: typeof gsap; ScrollTrigger?: typeof ScrollTrigger }).gsap &&
+      (window as unknown as { ScrollTrigger?: typeof ScrollTrigger }).ScrollTrigger
+    ) {
+      const gsapInstance = (window as unknown as { gsap: typeof gsap }).gsap
 
       // Initial state - hide elements
-      gsap.set([titleRef.current, cardsRef.current], { opacity: 0, y: 30 })
+      gsapInstance.set([titleRef.current, cardsRef.current], { opacity: 0, y: 30 })
 
       // Animate title
-      gsap.to(titleRef.current, {
+      gsapInstance.to(titleRef.current, {
         opacity: 1,
         y: 0,
         duration: 1,
@@ -60,7 +63,7 @@ export default function WhyChooseUs() {
       })
 
       // Animate cards with stagger
-      gsap.to(cardsRef.current, {
+      gsapInstance.to(cardsRef.current, {
         opacity: 1,
         y: 0,
         duration: 1,
@@ -75,7 +78,7 @@ export default function WhyChooseUs() {
       // Animate individual cards
       const cards = cardsRef.current?.querySelectorAll('.feature-card')
       if (cards) {
-        gsap.fromTo(cards, 
+        gsapInstance.fromTo(cards, 
           { opacity: 0, y: 20, scale: 0.95 },
           {
             opacity: 1,
@@ -101,7 +104,7 @@ export default function WhyChooseUs() {
         {/* Main Title */}
         <div ref={titleRef} className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-normal mb-8" style={{ color: "#74886f" }}>
-            Don't let your teeth be an afterthought
+            Don&apos;t let your teeth be an afterthought
           </h2>
         </div>
 

@@ -1,5 +1,4 @@
 import Header from "@/components/Header";
-import Hero from "@/components/Hero";
 import VideoHero from "@/components/VideoHero";
 import BeforeAfterSection from "@/components/BeforeAfter";
 import AboutUs from "@/components/AboutUs";

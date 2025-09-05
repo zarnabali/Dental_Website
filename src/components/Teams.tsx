@@ -38,15 +38,18 @@ export default function Teams() {
   ]
 
   useEffect(() => {
-    if (typeof window !== "undefined" && window.gsap && (window as any).ScrollTrigger) {
-      const { gsap } = window
-      const ScrollTrigger = (window as any).ScrollTrigger
+    if (
+      typeof window !== "undefined" &&
+      (window as unknown as { gsap?: typeof gsap; ScrollTrigger?: typeof ScrollTrigger }).gsap &&
+      (window as unknown as { ScrollTrigger?: typeof ScrollTrigger }).ScrollTrigger
+    ) {
+      const gsapInstance = (window as unknown as { gsap: typeof gsap }).gsap
 
       // Initial state - hide elements
-      gsap.set([titleRef.current, cardsRef.current], { opacity: 0, y: 50 })
+      gsapInstance.set([titleRef.current, cardsRef.current], { opacity: 0, y: 50 })
 
       // Animate title
-      gsap.to(titleRef.current, {
+      gsapInstance.to(titleRef.current, {
         opacity: 1,
         y: 0,
         duration: 1,
@@ -59,7 +62,7 @@ export default function Teams() {
       })
 
       // Animate cards with stagger
-      gsap.to(cardsRef.current, {
+      gsapInstance.to(cardsRef.current, {
         opacity: 1,
         y: 0,
         duration: 1,
@@ -74,7 +77,7 @@ export default function Teams() {
       // Animate individual cards
       const cards = cardsRef.current?.querySelectorAll('.team-card')
       if (cards) {
-        gsap.fromTo(cards, 
+        gsapInstance.fromTo(cards, 
           { opacity: 0, y: 30, scale: 0.95 },
           {
             opacity: 1,

@@ -21,15 +21,18 @@ export default function Footer() {
   const bottomBarRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (typeof window !== "undefined" && window.gsap && (window as any).ScrollTrigger) {
-      const { gsap } = window
-      const ScrollTrigger = (window as any).ScrollTrigger
+    if (
+      typeof window !== "undefined" &&
+      (window as unknown as { gsap?: typeof gsap; ScrollTrigger?: typeof ScrollTrigger }).gsap &&
+      (window as unknown as { ScrollTrigger?: typeof ScrollTrigger }).ScrollTrigger
+    ) {
+      const gsapInstance = (window as unknown as { gsap: typeof gsap }).gsap
 
       // Initial state - hide footer
       gsap.set(footerRef.current, { opacity: 0, y: 50 })
 
       // Animate in when scrolling to footer
-      gsap.to(footerRef.current, {
+      gsapInstance.to(footerRef.current, {
         opacity: 1,
         y: 0,
         duration: 1,
@@ -42,7 +45,7 @@ export default function Footer() {
       })
 
       // Animate sections with stagger
-      gsap.fromTo(
+      gsapInstance.fromTo(
         [logoRef.current, servicesRef.current, linksRef.current, contactRef.current, socialRef.current],
         { opacity: 0, y: 30 },
         {

@@ -52,15 +52,18 @@ export default function Services() {
   ];
 
   useEffect(() => {
-    if (typeof window !== "undefined" && window.gsap && (window as any).ScrollTrigger) {
-      const { gsap } = window
-      const ScrollTrigger = (window as any).ScrollTrigger
+    if (
+      typeof window !== "undefined" &&
+      (window as unknown as { gsap?: typeof gsap; ScrollTrigger?: typeof ScrollTrigger }).gsap &&
+      (window as unknown as { ScrollTrigger?: typeof ScrollTrigger }).ScrollTrigger
+    ) {
+      const gsapInstance = (window as unknown as { gsap: typeof gsap }).gsap
 
       // Initial state - hide section
-      gsap.set(sectionRef.current, { opacity: 0, y: 50 })
+      gsapInstance.set(sectionRef.current, { opacity: 0, y: 50 })
 
       // Animate in when scrolling to section
-      gsap.to(sectionRef.current, {
+      gsapInstance.to(sectionRef.current, {
         opacity: 1,
         y: 0,
         duration: 1,
@@ -74,7 +77,7 @@ export default function Services() {
       })
 
       // Animate title
-      gsap.fromTo(
+      gsapInstance.fromTo(
         titleRef.current,
         { opacity: 0, y: 30 },
         {
@@ -91,7 +94,7 @@ export default function Services() {
       )
 
       // Animate service cards with stagger
-      gsap.fromTo(
+      gsapInstance.fromTo(
         ".service-card",
         { opacity: 0, y: 50, scale: 0.95 },
         {
@@ -124,7 +127,7 @@ export default function Services() {
 
         {/* Services Grid */}
         <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {services.map((service, index) => (
+          {services.map((service) => (
             <div
               key={service.id}
               className="service-card group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer"

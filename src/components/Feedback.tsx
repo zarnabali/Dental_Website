@@ -74,15 +74,18 @@ export default function PatientFeedback() {
   }, []);
 
   useEffect(() => {
-    if (typeof window !== "undefined" && window.gsap && (window as any).ScrollTrigger) {
-      const { gsap } = window
-      const ScrollTrigger = (window as any).ScrollTrigger
+    if (
+      typeof window !== "undefined" &&
+      (window as unknown as { gsap?: typeof gsap; ScrollTrigger?: typeof ScrollTrigger }).gsap &&
+      (window as unknown as { ScrollTrigger?: typeof ScrollTrigger }).ScrollTrigger
+    ) {
+      const gsapInstance = (window as unknown as { gsap: typeof gsap }).gsap
 
       // Initial state - hide section
-      gsap.set(sectionRef.current, { opacity: 0, y: 100 })
+      gsapInstance.set(sectionRef.current, { opacity: 0, y: 100 })
 
       // Animate in when scrolling to section
-      gsap.to(sectionRef.current, {
+      gsapInstance.to(sectionRef.current, {
         opacity: 1,
         y: 0,
         duration: 1,
@@ -99,10 +102,10 @@ export default function PatientFeedback() {
 
   // Animate content on slide change
   useEffect(() => {
-    if (typeof window === "undefined" || !window.gsap) return;
-    const { gsap } = window as any;
+    if (typeof window === "undefined" || !(window as unknown as { gsap?: typeof gsap }).gsap) return;
+    const gsapInstance = (window as unknown as { gsap: typeof gsap }).gsap;
     if (!contentRef.current) return;
-    gsap.fromTo(
+    gsapInstance.fromTo(
       contentRef.current,
       { opacity: 0, x: direction === 1 ? 40 : -40 },
       { opacity: 1, x: 0, duration: 0.5, ease: "power2.out" }

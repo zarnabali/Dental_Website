@@ -55,10 +55,10 @@ export default function Blogs() {
 
   // Reveal animations
   useEffect(() => {
-    if (typeof window === "undefined" || !window.gsap || !(window as any).ScrollTrigger) return
-    const { gsap } = window
-    gsap.set([titleRef.current, trackRef.current], { opacity: 0, y: 30 })
-    gsap.to(titleRef.current, {
+    if (typeof window === "undefined" || !(window as unknown as { gsap?: typeof gsap }).gsap) return
+    const gsapInstance = (window as unknown as { gsap: typeof gsap }).gsap
+    gsapInstance.set([titleRef.current, trackRef.current], { opacity: 0, y: 30 })
+    gsapInstance.to(titleRef.current, {
       opacity: 1,
       y: 0,
       duration: 0.9,
@@ -69,7 +69,7 @@ export default function Blogs() {
         toggleActions: "play none none reverse",
       },
     })
-    gsap.to(trackRef.current, {
+    gsapInstance.to(trackRef.current, {
       opacity: 1,
       y: 0,
       duration: 0.9,

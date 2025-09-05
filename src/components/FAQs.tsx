@@ -63,15 +63,18 @@ export default function FAQs() {
   ];
 
   useEffect(() => {
-    if (typeof window !== "undefined" && window.gsap && (window as any).ScrollTrigger) {
-      const { gsap } = window
-      const ScrollTrigger = (window as any).ScrollTrigger
+    if (
+      typeof window !== "undefined" &&
+      (window as unknown as { gsap?: typeof gsap; ScrollTrigger?: typeof ScrollTrigger }).gsap &&
+      (window as unknown as { ScrollTrigger?: typeof ScrollTrigger }).ScrollTrigger
+    ) {
+      const gsapInstance = (window as unknown as { gsap: typeof gsap }).gsap
 
       // Initial state - hide section
-      gsap.set(sectionRef.current, { opacity: 0, y: 50 })
+      gsapInstance.set(sectionRef.current, { opacity: 0, y: 50 })
 
       // Animate in when scrolling to section
-      gsap.to(sectionRef.current, {
+      gsapInstance.to(sectionRef.current, {
         opacity: 1,
         y: 0,
         duration: 1,
@@ -85,7 +88,7 @@ export default function FAQs() {
       })
 
       // Animate title
-      gsap.fromTo(
+      gsapInstance.fromTo(
         titleRef.current,
         { opacity: 0, y: 30 },
         {
@@ -102,7 +105,7 @@ export default function FAQs() {
       )
 
       // Animate left column
-      gsap.fromTo(
+      gsapInstance.fromTo(
         leftColumnRef.current,
         { opacity: 0, x: -30 },
         {
@@ -119,7 +122,7 @@ export default function FAQs() {
       )
 
       // Animate right column
-      gsap.fromTo(
+      gsapInstance.fromTo(
         rightColumnRef.current,
         { opacity: 0, x: 30 },
         {

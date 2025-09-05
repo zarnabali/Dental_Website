@@ -54,15 +54,18 @@ export default function BeforeAfterSection() {
   const currentIndex = useRef(0)
 
   useEffect(() => {
-    if (typeof window !== "undefined" && window.gsap && (window as any).ScrollTrigger) {
-      const { gsap } = window
-      const ScrollTrigger = (window as any).ScrollTrigger
+    if (
+      typeof window !== "undefined" &&
+      (window as unknown as { gsap?: typeof gsap; ScrollTrigger?: typeof ScrollTrigger }).gsap &&
+      (window as unknown as { ScrollTrigger?: typeof ScrollTrigger }).ScrollTrigger
+    ) {
+      const gsapInstance = (window as unknown as { gsap: typeof gsap }).gsap
 
       // Initial state - hide section
-      gsap.set(sectionRef.current, { opacity: 0, y: 100 })
+      gsapInstance.set(sectionRef.current, { opacity: 0, y: 100 })
 
       // Animate in when scrolling to section
-      gsap.to(sectionRef.current, {
+      gsapInstance.to(sectionRef.current, {
         opacity: 1,
         y: 0,
         duration: 1,
@@ -76,7 +79,7 @@ export default function BeforeAfterSection() {
       })
 
       // Animate cards with stagger
-      gsap.fromTo(
+      gsapInstance.fromTo(
         ".before-after-card",
         { opacity: 0, y: 50, scale: 0.9 },
         {
@@ -101,7 +104,7 @@ export default function BeforeAfterSection() {
       const isMobile = window.innerWidth < 768
       const cardWidth = isMobile ? 256 : 288 // w-64 (256px) + gap-4 (16px) = 272px for mobile, w-72 (288px) + gap-6 (24px) = 312px for desktop
       const maxVisible = isMobile ? 1 : 3
-      const maxScroll = (beforeAfterData.length - maxVisible) * cardWidth
+      // maxScroll not used; compute and scroll based on index only
 
       if (currentIndex.current < beforeAfterData.length - maxVisible) {
         currentIndex.current++

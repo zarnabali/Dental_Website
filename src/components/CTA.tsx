@@ -12,15 +12,18 @@ export default function CTA() {
   const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (typeof window !== "undefined" && window.gsap && (window as any).ScrollTrigger) {
-      const { gsap } = window
-      const ScrollTrigger = (window as any).ScrollTrigger
+    if (
+      typeof window !== "undefined" &&
+      (window as unknown as { gsap?: typeof gsap; ScrollTrigger?: typeof ScrollTrigger }).gsap &&
+      (window as unknown as { ScrollTrigger?: typeof ScrollTrigger }).ScrollTrigger
+    ) {
+      const gsapInstance = (window as unknown as { gsap: typeof gsap }).gsap
 
       // Initial state - hide section
-      gsap.set(sectionRef.current, { opacity: 0, y: 100 })
+      gsapInstance.set(sectionRef.current, { opacity: 0, y: 100 })
 
       // Animate in when scrolling to section
-      gsap.to(sectionRef.current, {
+      gsapInstance.to(sectionRef.current, {
         opacity: 1,
         y: 0,
         duration: 1,
@@ -34,7 +37,7 @@ export default function CTA() {
       })
 
       // Animate content with stagger
-      gsap.fromTo(
+      gsapInstance.fromTo(
         contentRef.current?.children || [],
         { opacity: 0, y: 30 },
         {

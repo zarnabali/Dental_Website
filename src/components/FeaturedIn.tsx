@@ -20,13 +20,12 @@ export default function FeaturedIn() {
   ]
 
   useEffect(() => {
-    if (typeof window !== "undefined" && window.gsap && (window as any).ScrollTrigger) {
-      const { gsap } = window
-      const ScrollTrigger = (window as any).ScrollTrigger
+    if (typeof window !== "undefined" && (window as unknown as { gsap?: typeof gsap; ScrollTrigger?: typeof ScrollTrigger }).gsap && (window as unknown as { ScrollTrigger?: typeof ScrollTrigger }).ScrollTrigger) {
+      const gsapInstance = (window as unknown as { gsap: typeof gsap }).gsap
 
-      gsap.set([titleRef.current, logosRef.current], { opacity: 0, y: 20 })
+      gsapInstance.set([titleRef.current, logosRef.current], { opacity: 0, y: 20 })
 
-      gsap.to(titleRef.current, {
+      gsapInstance.to(titleRef.current, {
         opacity: 1,
         y: 0,
         duration: 0.8,
@@ -38,7 +37,7 @@ export default function FeaturedIn() {
         },
       })
 
-      gsap.to(logosRef.current, {
+      gsapInstance.to(logosRef.current, {
         opacity: 1,
         y: 0,
         duration: 0.8,
