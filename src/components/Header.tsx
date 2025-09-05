@@ -63,21 +63,30 @@ export default function Header() {
 
         {/* Desktop Navigation Links - Right Side */}
         <div className="hidden lg:flex items-center space-x-8">
-          <Link href="#home" className="text-gray-700 hover:text-blue-600 transition-colors">
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="text-gray-700 hover:text-blue-600 transition-colors"
+          >
             Home
-          </Link>
-          <Link href="#about" className="text-gray-700 hover:text-[#74886f] transition-colors">
+          </button>
+          <button
+            onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+            className="text-gray-700 hover:text-[#74886f] transition-colors"
+          >
             About Us
-          </Link>
-          <Link href="#services" className="text-gray-700 hover:text-[#74886f] transition-colors">
+          </button>
+          <button
+            onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+            className="text-gray-700 hover:text-[#74886f] transition-colors"
+          >
             Services
-          </Link>
-          <Link href="#contact" className="text-gray-700 hover:text-[#74886f] transition-colors">
-            Contact
-          </Link>
-          <Link href="#blogs" className="text-gray-700 hover:text-[#74886f] transition-colors">
+          </button>
+          <button
+            onClick={() => document.getElementById('blogs')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+            className="text-gray-700 hover:text-[#74886f] transition-colors"
+          >
             Blogs
-          </Link>
+          </button>
           <Button className="bg-[#963f36] text-white px-6 py-2 rounded-lg hover:bg-[#9e6058] transition-colors font-helvetica font-regular">
             BOOK APPOINTMENT
           </Button>
@@ -125,38 +134,30 @@ export default function Header() {
               {/* Mobile Navigation */}
               <nav className="flex-1 p-6">
                 <div className="flex flex-col space-y-6">
-                  <Link 
-                    href="#home" 
-                    className="text-xl text-gray-700 hover:text-blue-600 transition-colors py-2 border-b border-gray-100" 
-                    onClick={() => setIsOpen(false)}
+                  <button 
+                    className="text-left text-xl text-gray-700 hover:text-blue-600 transition-colors py-2 border-b border-gray-100" 
+                    onClick={() => { setIsOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }) }}
                   >
                     Home
-                  </Link>
+                  </button>
                   <Link 
                     href="#about" 
                     className="text-xl text-gray-700 hover:text-blue-600 transition-colors py-2 border-b border-gray-100" 
-                    onClick={() => setIsOpen(false)}
+                    onClick={(e) => { e.preventDefault(); setIsOpen(false); document.getElementById('about')?.scrollIntoView({ behavior: 'smooth', block: 'start' }) }}
                   >
                     About Us
                   </Link>
                   <Link 
                     href="#services" 
                     className="text-xl text-gray-700 hover:text-blue-600 transition-colors py-2 border-b border-gray-100" 
-                    onClick={() => setIsOpen(false)}
+                    onClick={(e) => { e.preventDefault(); setIsOpen(false); document.getElementById('services')?.scrollIntoView({ behavior: 'smooth', block: 'start' }) }}
                   >
                     Services
                   </Link>
                   <Link 
-                    href="#contact" 
-                    className="text-xl text-gray-700 hover:text-blue-600 transition-colors py-2 border-b border-gray-100" 
-                    onClick={() => setIsOpen(false)}
-                  >
-                    Contact
-                  </Link>
-                  <Link 
                     href="#blogs" 
                     className="text-xl text-gray-700 hover:text-blue-600 transition-colors py-2 border-b border-gray-100" 
-                    onClick={() => setIsOpen(false)}
+                    onClick={(e) => { e.preventDefault(); setIsOpen(false); document.getElementById('blogs')?.scrollIntoView({ behavior: 'smooth', block: 'start' }) }}
                   >
                     Blogs
                   </Link>
