@@ -1,8 +1,9 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { gsap } from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
+import { api } from "@/lib/api"
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -10,14 +11,53 @@ export default function FeaturedIn() {
   const sectionRef = useRef<HTMLElement>(null)
   const titleRef = useRef<HTMLDivElement>(null)
   const logosRef = useRef<HTMLDivElement>(null)
-
-  const partners = [
+  const [partners, setPartners] = useState([
     { id: 1, name: "KTLA 5", src: "/partners/p1.jpg" },
     { id: 2, name: "Angeleno", src: "/partners/p2.png" },
     { id: 3, name: "WEHO Online", src: "/partners/p3.png" },
     { id: 4, name: "Spa & Beauty", src: "/partners/p4.png" },
     { id: 5, name: "WEHO Times", src: "/partners/p5.png" },
-  ]
+  ])
+  const [loading, setLoading] = useState(true)
+
+  // Fetch partners from API
+  useEffect(() => {
+    const fetchPartners = async () => {
+      try {
+        setLoading(true)
+        console.log('Fetching partners from API...')
+        const response = await api.getPartners()
+        console.log('Partners response:', response)
+        
+        if (response.success && response.data && response.data.length > 0) {
+          const partnersData = response.data.map((item: any, index: number) => ({
+            id: index + 1,
+            name: item.partnerName || "Partner",
+            src: item.image?.url || "/partners/p1.jpg"
+          }))
+          console.log('Setting partners data:', partnersData)
+          setPartners(partnersData)
+        } else {
+          console.log('No partners data, using fallback')
+          setPartners([
+            { id: 1, name: "KTLA 5", src: "/partners/p1.jpg" },
+            { id: 2, name: "Angeleno", src: "/partners/p2.png" },
+            { id: 3, name: "WEHO Online", src: "/partners/p3.png" },
+            { id: 4, name: "Spa & Beauty", src: "/partners/p4.png" },
+            { id: 5, name: "WEHO Times", src: "/partners/p5.png" },
+          ])
+        }
+      } catch (error) {
+        console.error('Error fetching partners:', error)
+        console.log('Using fallback partners data')
+        // Keep fallback data
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchPartners()
+  }, [])
 
   useEffect(() => {
     if (typeof window !== "undefined" && (window as unknown as { gsap?: typeof gsap; ScrollTrigger?: typeof ScrollTrigger }).gsap && (window as unknown as { ScrollTrigger?: typeof ScrollTrigger }).ScrollTrigger) {

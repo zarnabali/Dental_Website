@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { api } from "@/lib/api";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -10,6 +11,50 @@ export default function CTA() {
   const sectionRef = useRef<HTMLElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const [stats, setStats] = useState({
+    experience: "15+",
+    patients: "1000+",
+    emergency: "24/7"
+  });
+  const [loading, setLoading] = useState(true);
+
+  // Fetch clinic info for stats
+  useEffect(() => {
+    const fetchClinicInfo = async () => {
+      try {
+        setLoading(true)
+        console.log('Fetching clinic info for stats from API...')
+        const response = await api.getClinicInfo()
+        console.log('Clinic info response for stats:', response)
+        
+        if (response.success && response.data) {
+          const data = response.data
+          const statsData = {
+            experience: `${data.noOfExperience || 15}+`,
+            patients: `${data.noOfPatients || 1000}+`,
+            emergency: "24/7"
+          }
+          console.log('Setting stats data:', statsData)
+          setStats(statsData)
+        } else {
+          console.log('No clinic info data for stats, using fallback')
+          setStats({
+            experience: "15+",
+            patients: "1000+",
+            emergency: "24/7"
+          })
+        }
+      } catch (error) {
+        console.error('Error fetching clinic info for stats:', error)
+        console.log('Using fallback stats data')
+        // Keep fallback data
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchClinicInfo()
+  }, [])
 
   useEffect(() => {
     if (
@@ -132,15 +177,15 @@ export default function CTA() {
               {/* Stats Grid */}
               <div className="grid md:grid-cols-3 gap-8 text-center">
                 <div className="text-white">
-                  <div className="text-4xl md:text-5xl font-light mb-2">15+</div>
+                  <div className="text-4xl md:text-5xl font-light mb-2">{stats.experience}</div>
                   <div className="text-white/80 text-sm md:text-base font-light tracking-wider uppercase">Years Experience</div>
                 </div>
                 <div className="text-white">
-                  <div className="text-4xl md:text-5xl font-light mb-2">1000+</div>
+                  <div className="text-4xl md:text-5xl font-light mb-2">{stats.patients}</div>
                   <div className="text-white/80 text-sm md:text-base font-light tracking-wider uppercase">Happy Patients</div>
                 </div>
                 <div className="text-white">
-                  <div className="text-4xl md:text-5xl font-light mb-2">24/7</div>
+                  <div className="text-4xl md:text-5xl font-light mb-2">{stats.emergency}</div>
                   <div className="text-white/80 text-sm md:text-base font-light tracking-wider uppercase">Emergency Care</div>
                 </div>
               </div>

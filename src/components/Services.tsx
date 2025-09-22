@@ -3,16 +3,25 @@
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { api } from "@/lib/api";
+import { useRouter } from "next/navigation";
 
 gsap.registerPlugin(ScrollTrigger);
+
+type Service = {
+  id: number
+  name: string
+  image: string
+  description: string
+  fullData?: any // Store the complete API data
+}
 
 export default function Services() {
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
-
-  const services = [
+  const [services, setServices] = useState<Service[]>([
     {
       id: 1,
       name: "Teeth Whitening",
@@ -49,7 +58,92 @@ export default function Services() {
       image: "/services/gums.jpg",
       description: "Comprehensive periodontal care for healthy gums and optimal oral health."
     }
-  ];
+  ]);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+
+  // Fetch services from API
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        setLoading(true)
+        console.log('Fetching services from API...')
+        const response = await api.getServices()
+        console.log('Services response:', response)
+        
+        if (response.success && response.data && response.data.length > 0) {
+          const servicesData = response.data.map((item: any, index: number) => ({
+            id: index + 1,
+            name: item.cardInfo?.title || "Dental Service",
+            image: item.cardInfo?.image?.url || "/services/whitening.jpg",
+            description: item.cardInfo?.description || "Professional dental care service.",
+            fullData: item // Store complete API data
+          }))
+          console.log('Setting services data:', servicesData)
+          setServices(servicesData)
+        } else {
+          console.log('No services data, using fallback')
+          setServices([
+            {
+              id: 1,
+              name: "Teeth Whitening",
+              image: "/services/whitening.jpg",
+              description: "Professional teeth whitening treatments for a brighter, more confident smile."
+            },
+            {
+              id: 2,
+              name: "Dental Fillings and Restoration",
+              image: "/services/filling.jpg",
+              description: "Advanced restorative treatments to repair and restore damaged teeth."
+            },
+            {
+              id: 3,
+              name: "Orthodontist Braces",
+              image: "/services/braces.jpg",
+              description: "Modern orthodontic solutions for perfectly aligned teeth and beautiful smiles."
+            },
+            {
+              id: 4,
+              name: "Root Canal Treatment",
+              image: "/services/root-canal.jpg",
+              description: "Pain-free root canal procedures to save and restore infected teeth."
+            },
+            {
+              id: 5,
+              name: "Artificial Teeth Replacements",
+              image: "/services/dental-implants.jpg",
+              description: "Premium dental implants and prosthetics for complete smile restoration."
+            },
+            {
+              id: 6,
+              name: "Gum Disease Treatment",
+              image: "/services/gums.jpg",
+              description: "Comprehensive periodontal care for healthy gums and optimal oral health."
+            }
+          ])
+        }
+      } catch (error) {
+        console.error('Error fetching services:', error)
+        console.log('Using fallback services data')
+        // Keep fallback data
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchServices()
+  }, [])
+
+  const handleServiceClick = (service: Service) => {
+    if (service.fullData) {
+      // Encode the full data as URL parameter
+      const encodedData = encodeURIComponent(JSON.stringify(service.fullData))
+      router.push(`/services?data=${encodedData}`)
+    } else {
+      // Fallback to default services page
+      router.push('/services')
+    }
+  }
 
   useEffect(() => {
     if (
@@ -134,6 +228,7 @@ export default function Services() {
               style={{ height: "400px" }}
               onMouseEnter={() => setHoveredCard(service.id)}
               onMouseLeave={() => setHoveredCard(null)}
+              onClick={() => handleServiceClick(service)}
             >
               {/* Background Image */}
               <div className="absolute inset-0">
@@ -203,6 +298,12 @@ export default function Services() {
               backgroundColor: "#963f36", 
               color: "white"
             }}
+            onClick={() => {
+              const contactSection = document.getElementById('contact');
+              if (contactSection) {
+                contactSection.scrollIntoView({ behavior: 'smooth' });
+              }
+            }}
             onMouseEnter={(e) => {
               e.currentTarget.style.backgroundColor = "white";
               e.currentTarget.style.color = "#963f36";
@@ -215,7 +316,7 @@ export default function Services() {
               e.currentTarget.style.borderWidth = "0px";
             }}
           >
-            Book Consultation
+            Contact Us
           </button>
         </div>
       </div>

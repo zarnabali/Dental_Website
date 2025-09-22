@@ -87,8 +87,22 @@ export default function Header() {
           >
             Blogs
           </button>
-          <Button className="bg-[#963f36] text-white px-6 py-2 rounded-lg hover:bg-[#9e6058] transition-colors font-helvetica font-regular">
-            BOOK APPOINTMENT
+          <Link
+            href="/contact"
+            className="text-gray-700 hover:text-[#74886f] transition-colors"
+          >
+            Contact
+          </Link>
+          <Button 
+            className="bg-[#963f36] text-white px-6 py-2 rounded-lg hover:bg-[#9e6058] transition-colors font-helvetica font-regular"
+            onClick={() => {
+              const contactSection = document.getElementById('contact');
+              if (contactSection) {
+                contactSection.scrollIntoView({ behavior: 'smooth' });
+              }
+            }}
+          >
+            GIVE FEEDBACK
           </Button>
         </div>
 
@@ -160,6 +174,13 @@ export default function Header() {
                     onClick={(e) => { e.preventDefault(); setIsOpen(false); document.getElementById('blogs')?.scrollIntoView({ behavior: 'smooth', block: 'start' }) }}
                   >
                     Blogs
+                  </Link>
+                  <Link 
+                    href="/contact" 
+                    className="text-xl text-gray-700 hover:text-blue-600 transition-colors py-2 border-b border-gray-100" 
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Contact
                   </Link>
                 </div>
               </nav>

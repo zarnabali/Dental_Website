@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { gsap } from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
+import { api } from "@/lib/api"
+import { useRouter } from "next/navigation"
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -11,6 +13,7 @@ type Blog = {
   title: string
   excerpt: string
   image: string
+  fullData?: any // Store the complete API data
 }
 
 export default function Blogs() {
@@ -19,8 +22,12 @@ export default function Blogs() {
   const trackRef = useRef<HTMLDivElement>(null)
   const [current, setCurrent] = useState(0)
   const [visibleCount, setVisibleCount] = useState(2)
+  const [blogs, setBlogs] = useState<Blog[]>([])
+  const [loading, setLoading] = useState(true)
+  const router = useRouter()
 
-  const blogs: Blog[] = useMemo(() => ([
+  // Fallback blogs data
+  const fallbackBlogs: Blog[] = useMemo(() => ([
     {
       id: 1,
       title: "Top Tips For A Brighter Smile",
@@ -52,6 +59,41 @@ export default function Blogs() {
       image: "/blogs/b5.jpg",
     },
   ]), [])
+
+  // Fetch blogs from API
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        setLoading(true)
+        console.log('Fetching blogs from API...')
+        const response = await api.getBlogs()
+        console.log('Blogs response:', response)
+        
+        if (response.success && response.data && response.data.length > 0) {
+          const blogsData = response.data.map((item: any, index: number) => ({
+            id: index + 1,
+            title: item.cardInfo?.title || "Blog Post",
+            excerpt: item.cardInfo?.description || "Read our latest dental insights and tips.",
+            image: item.cardInfo?.image?.url || "/blogs/b1.jpg",
+            fullData: item // Store complete API data
+          }))
+          console.log('Setting blogs data:', blogsData)
+          setBlogs(blogsData)
+        } else {
+          console.log('No blogs data, using fallback')
+          setBlogs(fallbackBlogs)
+        }
+      } catch (error) {
+        console.error('Error fetching blogs:', error)
+        console.log('Using fallback blogs data')
+        setBlogs(fallbackBlogs)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchBlogs()
+  }, [fallbackBlogs])
 
   // Reveal animations
   useEffect(() => {
@@ -128,6 +170,17 @@ export default function Blogs() {
     })
   }
 
+  const handleBlogClick = (blog: Blog) => {
+    if (blog.fullData) {
+      // Encode the full data as URL parameter
+      const encodedData = encodeURIComponent(JSON.stringify(blog.fullData))
+      router.push(`/blog?data=${encodedData}`)
+    } else {
+      // Fallback to default blog page
+      router.push('/blog')
+    }
+  }
+
   return (
     <section ref={sectionRef} id="blogs" className="py-16 md:py-24 bg-[#faf9f7]">
       <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-12">
@@ -152,8 +205,9 @@ export default function Blogs() {
               {blogs.map((blog) => (
                 <article
                   key={blog.id}
-                  className="group rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex-shrink-0"
+                  className="group rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex-shrink-0 cursor-pointer"
                   style={{ width: visibleCount === 2 ? "50%" : visibleCount === 3 ? "33.3333%" : "25%" }}
+                  onClick={() => handleBlogClick(blog)}
                 >
                   <div className="aspect-[16/11] w-full overflow-hidden">
                     <img

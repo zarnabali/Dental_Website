@@ -10,8 +10,12 @@ import Teams from "@/components/Teams";
 import Feedback from "@/components/Feedback";
 import CTA from "@/components/CTA";
 import FAQs from "@/components/FAQs";
+import ContactUs from "@/components/ContactUs";
+import BackendStatus from "@/components/BackendStatus";
 import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
+import Hero from "@/components/Hero";
+import APITest from "@/components/APITest";
 
 export default function Home() {
   return (
@@ -19,7 +23,7 @@ export default function Home() {
       <Header />      
       {/* Video Hero Section */}
       <div className="mt-4">
-        <VideoHero />
+        <Hero />
       </div>
       
      
@@ -38,8 +42,6 @@ export default function Home() {
        {/* Featured In Section */}
        <FeaturedIn />
        
-       
-       
        {/* Teams Section */}
        <Teams />
        
@@ -51,6 +53,11 @@ export default function Home() {
       <CTA />
       
      
+     
+      
+      {/* Contact Us Section */}
+      <ContactUs />
+    
       <Footer />
       <ScrollToTop />
     </div>

@@ -3,8 +3,10 @@
 import { Button } from "@/components/ui/button"
 import { useEffect, useRef, useState } from "react"
 import { gsap } from "gsap"
+import { api } from "@/lib/api"
 
-const videoHeroContent = {
+// Fallback content
+const fallbackVideoHeroContent = {
   videoUrl: {
     mobile: "/hero-video.mp4",
     desktop: "/hero-video-2.mp4"
@@ -22,10 +24,43 @@ export default function VideoHero() {
   const mobileVideoRef = useRef<HTMLVideoElement>(null)
   const desktopVideoRef = useRef<HTMLVideoElement>(null)
   const [isMobile, setIsMobile] = useState(false)
+  const [videoHeroContent, setVideoHeroContent] = useState(fallbackVideoHeroContent)
+  const [loading, setLoading] = useState(true)
+
+  // Fetch hero video from API
+  useEffect(() => {
+    const fetchHeroVideo = async () => {
+      try {
+        setLoading(true)
+        const response = await api.getHeroVideos()
+        if (response.success && response.data && response.data.length > 0) {
+          const videoData = response.data[0] // Get first video
+          setVideoHeroContent({
+            videoUrl: {
+              mobile: videoData.video?.url || "/hero-video.mp4",
+              desktop: videoData.video?.url || "/hero-video-2.mp4"
+            },
+            title: videoData.title || "Experience Excellence in Dental Care",
+            titleLink: "#services",
+            description: videoData.description || "Watch our state-of-the-art facility and expert team in action. We combine advanced technology with compassionate care to deliver exceptional dental services.",
+            buttonText: "Book Your Visit",
+            buttonLink: "#appointment"
+          })
+        }
+      } catch (error) {
+        console.error('Error fetching hero video:', error)
+        // Keep fallback data
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchHeroVideo()
+  }, [])
 
   // GSAP animations for content
   useEffect(() => {
-    if (!contentRef.current) return
+    if (!contentRef.current || loading) return
 
     gsap.fromTo(
       contentRef.current.children,
@@ -38,7 +73,7 @@ export default function VideoHero() {
         ease: "power2.out" 
       }
     )
-  }, [])
+  }, [loading])
 
   // Check if mobile viewport
   useEffect(() => {

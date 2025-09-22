@@ -3,17 +3,14 @@
 import { useState, useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { api } from "@/lib/api";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function PatientFeedback() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [direction, setDirection] = useState<1 | -1>(1);
-  const sectionRef = useRef<HTMLElement>(null);
-  const autoSlideIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
-
-  const testimonials = [
+  const [testimonials, setTestimonials] = useState([
     {
       id: 1,
       title: "WILL COME BACK!",
@@ -35,7 +32,74 @@ export default function PatientFeedback() {
       customer: "MOHAMMAD ALI",
       rating: 5
     }
-  ];
+  ]);
+  const [loading, setLoading] = useState(true);
+  const sectionRef = useRef<HTMLElement>(null);
+  const autoSlideIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  // Fetch feedback from API
+  useEffect(() => {
+    const fetchFeedback = async () => {
+      try {
+        setLoading(true)
+        console.log('Fetching feedback from API...')
+        const response = await api.getFeedback()
+        console.log('Feedback response:', response)
+        console.log('Response success:', response.success)
+        console.log('Response data:', response.data)
+        console.log('Data length:', response.data?.length)
+        
+        if (response.success && response.data && response.data.length > 0) {
+          const feedbackData = response.data.map((item: any, index: number) => {
+            console.log('Mapping item:', item)
+            return {
+              id: item._id || index + 1,
+              title: item.title || "EXCELLENT SERVICE",
+              text: item.description || "Great service and professional care.",
+              customer: item.username || "CUSTOMER",
+              rating: item.rating || 5
+            }
+          })
+          console.log('Setting feedback data:', feedbackData)
+          setTestimonials(feedbackData)
+        } else {
+          console.log('No feedback data, using fallback')
+          setTestimonials([
+            {
+              id: 1,
+              title: "WILL COME BACK!",
+              text: "The space is gorgeous and the staff was friendly! I'd never done professional whitening before and was pleased with the results.",
+              customer: "LYDIA HALLAY",
+              rating: 5
+            },
+            {
+              id: 2,
+              title: "DISCOMFORT-FREE",
+              text: "The team is so nice & professional. There was no pain and the appointment flew by!",
+              customer: "KATHERINE HARRIS",
+              rating: 5
+            },
+            {
+              id: 3,
+              title: "EXCELLENT SERVICE",
+              text: "Dr. Samiullah and his team provided outstanding care. The modern equipment and gentle approach made my treatment comfortable.",
+              customer: "MOHAMMAD ALI",
+              rating: 5
+            }
+          ])
+        }
+      } catch (error) {
+        console.error('Error fetching feedback:', error)
+        console.log('Using fallback feedback data')
+        // Keep fallback data
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchFeedback()
+  }, [])
 
   const showTestimonial = (index: number) => {
     setCurrentSlide(index);
@@ -132,6 +196,16 @@ export default function PatientFeedback() {
       onMouseEnter={stopAutoSlide}
       onMouseLeave={startAutoSlide}
     >
+      {loading && (
+        <div className="text-center text-white mb-4">
+          Loading feedback...
+        </div>
+      )}
+      
+      {/* Debug info - remove this after testing */}
+      <div className="text-center text-white text-xs mb-2 opacity-50">
+        Debug: {testimonials.length} testimonials loaded
+      </div>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="relative">
           {/* Testimonial Card */}

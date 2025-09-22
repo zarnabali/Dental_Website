@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { api } from "@/lib/api";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -12,8 +13,11 @@ export default function FAQs() {
   const leftColumnRef = useRef<HTMLDivElement>(null);
   const rightColumnRef = useRef<HTMLDivElement>(null);
   const [openIndex, setOpenIndex] = useState<number | null>(2); // Start with one item open
+  const [faqs, setFaqs] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const faqs = [
+  // Fallback FAQs data
+  const fallbackFaqs = [
     // Left Column
     {
       question: "What makes Dr. Samiullah's clinic different from my dentist?",
@@ -61,6 +65,38 @@ export default function FAQs() {
       answer: "We'll address any dental issues before whitening to ensure your oral health. Small cavities can often be filled the same day, while larger issues may require separate appointments. Dr. Samiullah will create a comprehensive treatment plan tailored to your needs."
     }
   ];
+
+  // Fetch FAQs from API
+  useEffect(() => {
+    const fetchFAQs = async () => {
+      try {
+        setLoading(true)
+        console.log('Fetching FAQs from API...')
+        const response = await api.getFAQs()
+        console.log('FAQs response:', response)
+        
+        if (response.success && response.data && response.data.length > 0) {
+          const faqsData = response.data.map((item: any) => ({
+            question: item.question || "FAQ Question",
+            answer: item.answer || "FAQ Answer"
+          }))
+          console.log('Setting FAQs data:', faqsData)
+          setFaqs(faqsData)
+        } else {
+          console.log('No FAQs data, using fallback')
+          setFaqs(fallbackFaqs)
+        }
+      } catch (error) {
+        console.error('Error fetching FAQs:', error)
+        console.log('Using fallback FAQs data')
+        setFaqs(fallbackFaqs)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchFAQs()
+  }, [])
 
   useEffect(() => {
     if (
