@@ -70,15 +70,32 @@ export default function Hero() {
         console.log('Hero images response:', response)
         
         if (response.success && response.data && response.data.length > 0) {
-          const slides = response.data.map((item: any) => ({
-            webImage: item.webImage?.url || item.image?.url || "/hero1.jpg",
-            mobileImage: item.mobileImage?.url || item.image?.url || "/hero1-mobile.jpg",
-            title: item.title || "Advanced Dental Care",
-            titleLink: "#services",
-            description: item.description || "Experience cutting-edge dental treatments with our state-of-the-art equipment and expert team.",
-            color: item.textColor || item.color || "text-white"
-          }))
-          console.log('Setting hero slides:', slides)
+          console.log('Raw API data:', response.data)
+          console.log('First item structure:', response.data[0])
+          
+          const slides = response.data.map((item: Record<string, unknown>, index: number) => {
+            console.log(`Processing item ${index}:`, item)
+            
+            // Handle different possible API response structures
+            const webImage = (item.webImage as { url?: string })?.url || (item.image as { url?: string })?.url || (item.image as string) || "/hero1.jpg"
+            const mobileImage = (item.mobileImage as { url?: string })?.url || (item.image as { url?: string })?.url || (item.image as string) || "/hero1-mobile.jpg"
+            const title = (item.title as string) || ((item.cardInfo as { title?: string })?.title) || "Advanced Dental Care"
+            const description = (item.description as string) || ((item.cardInfo as { description?: string })?.description) || "Experience cutting-edge dental treatments with our state-of-the-art equipment and expert team."
+            
+            const slide = {
+              webImage,
+              mobileImage,
+              title,
+              titleLink: "#services",
+              description,
+              color: (item.textColor as string) || (item.color as string) || "text-white"
+            }
+            
+            console.log(`Processed slide ${index}:`, slide)
+            return slide
+          })
+          
+          console.log('Final hero slides:', slides)
           setHeroSlides(slides)
         } else {
           console.log('No hero images data, using fallback')
@@ -156,6 +173,17 @@ export default function Hero() {
 
   const currentSlideData = heroSlides[currentSlide]
 
+  if (loading) {
+    return (
+      <section className="relative rounded-3xl mx-4 sm:mx-6 lg:mx-10 h-[calc(100vh-80px)] sm:h-[calc(100vh-80px)] lg:h-[600px] overflow-hidden font-light font-trebuchet bg-gray-200 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading hero images...</p>
+        </div>
+      </section>
+    )
+  }
+
   return (
     <section ref={heroRef} className="relative rounded-3xl mx-4 sm:mx-6 lg:mx-10 h-[calc(100vh-80px)] sm:h-[calc(100vh-80px)] lg:h-[600px] overflow-hidden font-light font-trebuchet">
       {/* Background */}
@@ -165,12 +193,22 @@ export default function Hero() {
           src={currentSlideData.mobileImage}
           alt={currentSlideData.title}
           className="w-full h-full object-cover md:hidden"
+          onError={(e) => {
+            console.error('Error loading mobile image:', currentSlideData.mobileImage)
+            e.currentTarget.src = "/hero1-mobile.jpg"
+          }}
+          onLoad={() => console.log('Mobile image loaded:', currentSlideData.mobileImage)}
         />
         {/* Desktop Image */}
         <img
           src={currentSlideData.webImage}
           alt={currentSlideData.title}
           className="w-full h-full object-cover hidden md:block"
+          onError={(e) => {
+            console.error('Error loading desktop image:', currentSlideData.webImage)
+            e.currentTarget.src = "/hero1.jpg"
+          }}
+          onLoad={() => console.log('Desktop image loaded:', currentSlideData.webImage)}
         />
         {/* Overlay */}
         <div className="absolute inset-0 bg-black/30" />

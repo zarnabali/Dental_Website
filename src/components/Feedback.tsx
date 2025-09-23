@@ -51,13 +51,13 @@ export default function PatientFeedback() {
         console.log('Data length:', response.data?.length)
         
         if (response.success && response.data && response.data.length > 0) {
-          const feedbackData = response.data.map((item: any, index: number) => {
+          const feedbackData = response.data.map((item: { id: number; name: string; rating: number; comment: string; image?: string; _id?: string; title?: string; description?: string; username?: string }, index: number) => {
             console.log('Mapping item:', item)
             return {
-              id: item._id || index + 1,
+              id: item._id || item.id || index + 1,
               title: item.title || "EXCELLENT SERVICE",
-              text: item.description || "Great service and professional care.",
-              customer: item.username || "CUSTOMER",
+              text: item.description || item.comment || "Great service and professional care.",
+              customer: item.username || item.name || "CUSTOMER",
               rating: item.rating || 5
             }
           })

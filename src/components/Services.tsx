@@ -13,7 +13,15 @@ type Service = {
   name: string
   image: string
   description: string
-  fullData?: any // Store the complete API data
+  fullData?: {
+    id: number
+    name: string
+    description: string
+    image: string
+    price?: number
+    duration?: string
+    features?: string[]
+  }
 }
 
 export default function Services() {
@@ -72,11 +80,11 @@ export default function Services() {
         console.log('Services response:', response)
         
         if (response.success && response.data && response.data.length > 0) {
-          const servicesData = response.data.map((item: any, index: number) => ({
+          const servicesData = response.data.map((item: { id: number; name: string; description: string; image: string; price?: number; duration?: string; features?: string[]; cardInfo?: { title?: string; description?: string; image?: { url?: string } } }, index: number) => ({
             id: index + 1,
-            name: item.cardInfo?.title || "Dental Service",
-            image: item.cardInfo?.image?.url || "/services/whitening.jpg",
-            description: item.cardInfo?.description || "Professional dental care service.",
+            name: item.cardInfo?.title || item.name || "Dental Service",
+            image: item.cardInfo?.image?.url || item.image || "/services/whitening.jpg",
+            description: item.cardInfo?.description || item.description || "Professional dental care service.",
             fullData: item // Store complete API data
           }))
           console.log('Setting services data:', servicesData)

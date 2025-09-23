@@ -30,10 +30,10 @@ export default function FeaturedIn() {
         console.log('Partners response:', response)
         
         if (response.success && response.data && response.data.length > 0) {
-          const partnersData = response.data.map((item: any, index: number) => ({
+          const partnersData = response.data.map((item: { id: number; name: string; logo: string; url?: string; partnerName?: string; image?: { url?: string } }, index: number) => ({
             id: index + 1,
-            name: item.partnerName || "Partner",
-            src: item.image?.url || "/partners/p1.jpg"
+            name: item.partnerName || item.name || "Partner",
+            src: item.image?.url || item.logo || "/partners/p1.jpg"
           }))
           console.log('Setting partners data:', partnersData)
           setPartners(partnersData)

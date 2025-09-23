@@ -13,7 +13,7 @@ export default function FAQs() {
   const leftColumnRef = useRef<HTMLDivElement>(null);
   const rightColumnRef = useRef<HTMLDivElement>(null);
   const [openIndex, setOpenIndex] = useState<number | null>(2); // Start with one item open
-  const [faqs, setFaqs] = useState<any[]>([]);
+  const [faqs, setFaqs] = useState<{ question: string; answer: string }[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Fallback FAQs data
@@ -76,7 +76,7 @@ export default function FAQs() {
         console.log('FAQs response:', response)
         
         if (response.success && response.data && response.data.length > 0) {
-          const faqsData = response.data.map((item: any) => ({
+          const faqsData = response.data.map((item: { id: number; question: string; answer: string }) => ({
             question: item.question || "FAQ Question",
             answer: item.answer || "FAQ Answer"
           }))

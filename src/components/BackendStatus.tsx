@@ -34,7 +34,8 @@ export default function BackendStatus() {
         }
       } catch (error) {
         setStatus('offline');
-        setDetails(`Cannot connect to backend: ${error.message}`);
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+        setDetails(`Cannot connect to backend: ${errorMessage}`);
         console.log('❌ Backend is offline:', error);
       }
     };

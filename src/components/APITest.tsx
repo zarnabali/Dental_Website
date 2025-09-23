@@ -3,13 +3,19 @@
 import { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
 
+type APIResponseData = {
+  success?: boolean;
+  data?: unknown;
+  [key: string]: unknown;
+};
+
 export default function APITest() {
-  const [testResults, setTestResults] = useState<any>({});
+  const [testResults, setTestResults] = useState<Record<string, { success: boolean; data?: unknown; error?: string; suggestion?: string }>>({});
   const [loading, setLoading] = useState(false);
 
   const testAPI = async () => {
     setLoading(true);
-    const results: any = {};
+    const results: Record<string, { success: boolean; data?: unknown; error?: string; suggestion?: string }> = {};
 
     try {
       // Test each API endpoint
@@ -21,10 +27,11 @@ export default function APITest() {
         results.heroImages = { success: true, data: heroResponse };
         console.log('Hero Images:', heroResponse);
       } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
         results.heroImages = { 
           success: false, 
-          error: error.message,
-          suggestion: error.message.includes('not accessible') ? 'Start your backend server' : 'Check backend logs'
+          error: errorMessage,
+          suggestion: errorMessage.includes('not accessible') ? 'Start your backend server' : 'Check backend logs'
         };
         console.error('Hero Images Error:', error);
       }
@@ -35,10 +42,11 @@ export default function APITest() {
         results.feedback = { success: true, data: feedbackResponse };
         console.log('Feedback:', feedbackResponse);
       } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
         results.feedback = { 
           success: false, 
-          error: error.message,
-          suggestion: error.message.includes('not accessible') ? 'Start your backend server' : 'Check backend logs'
+          error: errorMessage,
+          suggestion: errorMessage.includes('not accessible') ? 'Start your backend server' : 'Check backend logs'
         };
         console.error('Feedback Error:', error);
       }
@@ -49,10 +57,11 @@ export default function APITest() {
         results.services = { success: true, data: servicesResponse };
         console.log('Services:', servicesResponse);
       } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
         results.services = { 
           success: false, 
-          error: error.message,
-          suggestion: error.message.includes('not accessible') ? 'Start your backend server' : 'Check backend logs'
+          error: errorMessage,
+          suggestion: errorMessage.includes('not accessible') ? 'Start your backend server' : 'Check backend logs'
         };
         console.error('Services Error:', error);
       }
@@ -63,10 +72,11 @@ export default function APITest() {
         results.team = { success: true, data: teamResponse };
         console.log('Team:', teamResponse);
       } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
         results.team = { 
           success: false, 
-          error: error.message,
-          suggestion: error.message.includes('not accessible') ? 'Start your backend server' : 'Check backend logs'
+          error: errorMessage,
+          suggestion: errorMessage.includes('not accessible') ? 'Start your backend server' : 'Check backend logs'
         };
         console.error('Team Error:', error);
       }
@@ -77,10 +87,11 @@ export default function APITest() {
         results.clinicInfo = { success: true, data: clinicResponse };
         console.log('Clinic Info:', clinicResponse);
       } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
         results.clinicInfo = { 
           success: false, 
-          error: error.message,
-          suggestion: error.message.includes('not accessible') ? 'Start your backend server' : 'Check backend logs'
+          error: errorMessage,
+          suggestion: errorMessage.includes('not accessible') ? 'Start your backend server' : 'Check backend logs'
         };
         console.error('Clinic Info Error:', error);
       }
@@ -91,10 +102,11 @@ export default function APITest() {
         results.blogs = { success: true, data: blogsResponse };
         console.log('Blogs:', blogsResponse);
       } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
         results.blogs = { 
           success: false, 
-          error: error.message,
-          suggestion: error.message.includes('not accessible') ? 'Start your backend server' : 'Check backend logs'
+          error: errorMessage,
+          suggestion: errorMessage.includes('not accessible') ? 'Start your backend server' : 'Check backend logs'
         };
         console.error('Blogs Error:', error);
       }
@@ -105,10 +117,11 @@ export default function APITest() {
         results.partners = { success: true, data: partnersResponse };
         console.log('Partners:', partnersResponse);
       } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
         results.partners = { 
           success: false, 
-          error: error.message,
-          suggestion: error.message.includes('not accessible') ? 'Start your backend server' : 'Check backend logs'
+          error: errorMessage,
+          suggestion: errorMessage.includes('not accessible') ? 'Start your backend server' : 'Check backend logs'
         };
         console.error('Partners Error:', error);
       }
@@ -119,10 +132,11 @@ export default function APITest() {
         results.faqs = { success: true, data: faqsResponse };
         console.log('FAQs:', faqsResponse);
       } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
         results.faqs = { 
           success: false, 
-          error: error.message,
-          suggestion: error.message.includes('not accessible') ? 'Start your backend server' : 'Check backend logs'
+          error: errorMessage,
+          suggestion: errorMessage.includes('not accessible') ? 'Start your backend server' : 'Check backend logs'
         };
         console.error('FAQs Error:', error);
       }
@@ -148,20 +162,20 @@ export default function APITest() {
       {loading && <p className="text-blue-600">Testing APIs...</p>}
       
       <div className="grid gap-4">
-        {Object.entries(testResults).map(([endpoint, result]: [string, any]) => (
+        {Object.entries(testResults).map(([endpoint, result]) => (
           <div key={endpoint} className="p-4 border rounded-lg bg-white">
             <h3 className="font-semibold text-lg mb-2">{endpoint}</h3>
             {result.success ? (
               <div>
                 <p className="text-green-600">✅ Success</p>
                 <p className="text-sm text-gray-600">
-                  Data: {result.data?.success ? 'API returned success' : 'API returned data'}
+                  Data: {(result.data as APIResponseData)?.success ? 'API returned success' : 'API returned data'}
                 </p>
-                {result.data?.data && (
+                {(result.data as APIResponseData)?.data ? (
                   <p className="text-sm text-gray-600">
-                    Items: {Array.isArray(result.data.data) ? result.data.data.length : 'Single item'}
+                    Items: {Array.isArray((result.data as APIResponseData).data) ? ((result.data as APIResponseData).data as unknown[]).length : 'Single item'}
                   </p>
-                )}
+                ) : null}
               </div>
             ) : (
               <div>

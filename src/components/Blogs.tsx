@@ -13,7 +13,16 @@ type Blog = {
   title: string
   excerpt: string
   image: string
-  fullData?: any // Store the complete API data
+  fullData?: {
+    id: number
+    title: string
+    excerpt: string
+    content: string
+    image: string
+    author: string
+    date: string
+    category: string
+  }
 }
 
 export default function Blogs() {
@@ -70,11 +79,11 @@ export default function Blogs() {
         console.log('Blogs response:', response)
         
         if (response.success && response.data && response.data.length > 0) {
-          const blogsData = response.data.map((item: any, index: number) => ({
+          const blogsData = response.data.map((item: { id: number; title: string; excerpt: string; image: string; content: string; author: string; date: string; category: string; cardInfo?: { title?: string; description?: string; image?: { url?: string } } }, index: number) => ({
             id: index + 1,
-            title: item.cardInfo?.title || "Blog Post",
-            excerpt: item.cardInfo?.description || "Read our latest dental insights and tips.",
-            image: item.cardInfo?.image?.url || "/blogs/b1.jpg",
+            title: item.cardInfo?.title || item.title || "Blog Post",
+            excerpt: item.cardInfo?.description || item.excerpt || "Read our latest dental insights and tips.",
+            image: item.cardInfo?.image?.url || item.image || "/blogs/b1.jpg",
             fullData: item // Store complete API data
           }))
           console.log('Setting blogs data:', blogsData)

@@ -2,7 +2,7 @@
 
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 
 type BlogData = {
@@ -37,7 +37,7 @@ type BlogData = {
   updatedAt: string;
 };
 
-export default function BlogPage() {
+function BlogContent() {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const searchParams = useSearchParams();
   const [blogData, setBlogData] = useState<BlogData | null>(null);
@@ -155,7 +155,7 @@ export default function BlogPage() {
             )) || (
               <ol className="list-decimal pl-5 space-y-2 text-gray-700 mt-4">
                 <li>Use a soft-bristle brush twice daily and replace it every 3 months.</li>
-                <li>Floss nightly to remove plaque where brushes can't reach.</li>
+                <li>Floss nightly to remove plaque where brushes can&apos;t reach.</li>
                 <li>Rinse with fluoride to strengthen enamel and prevent decay.</li>
                 <li>Limit dark beverages; drink through a straw and rinse with water after.</li>
                 <li>Eat crunchy fruits and veggies—natural polishers that stimulate saliva.</li>
@@ -261,6 +261,14 @@ export default function BlogPage() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function BlogPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <BlogContent />
+    </Suspense>
   );
 }
 

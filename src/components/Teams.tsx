@@ -62,11 +62,11 @@ export default function Teams() {
         console.log('Team response:', response)
         
         if (response.success && response.data && response.data.length > 0) {
-          const teamData = response.data.map((item: any, index: number) => ({
+          const teamData = response.data.map((item: { id: number; name: string; position: string; image: string; bio?: string; experience?: string; education?: string[]; designation?: string; speciality?: string }, index: number) => ({
             id: index + 1,
             name: item.name || "Team Member",
-            position: item.designation || "Dental Professional",
-            image: item.image?.url || "/dr_sami.jpg",
+            position: item.designation || item.position || "Dental Professional",
+            image: item.image || "/dr_sami.jpg",
             specialty: item.speciality || "General Dentistry"
           }))
           console.log('Setting team data:', teamData)
@@ -127,10 +127,11 @@ export default function Teams() {
         }
       } catch (error) {
         console.error('Error fetching team picture:', error)
-        if (error.message?.includes('404')) {
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+        if (errorMessage.includes('404')) {
           console.log('No team picture found (404)')
         } else {
-          console.log('API error:', error.message)
+          console.log('API error:', errorMessage)
         }
         setTeamPicture(null)
       } finally {

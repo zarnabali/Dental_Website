@@ -94,7 +94,7 @@ export const apiEndpoints = {
 export const api = {
   // Generic methods
   get: (endpoint: string) => axiosInstance.get(endpoint),
-  post: (endpoint: string, data: any) => axiosInstance.post(endpoint, data),
+  post: (endpoint: string, data: Record<string, unknown>) => axiosInstance.post(endpoint, data),
   
   // Hero Images
   getHeroImages: async () => {
@@ -164,7 +164,7 @@ export const api = {
 };
 
 // Hook for data fetching with loading states
-export function useAPI<T>(apiCall: () => Promise<T>, dependencies: any[] = []) {
+export function useAPI<T>(apiCall: () => Promise<T>, dependencies: unknown[] = []) {
   const [data, setData] = React.useState<T | null>(null);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
