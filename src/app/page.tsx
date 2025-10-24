@@ -45,13 +45,6 @@ export default function Home() {
        <Teams />
        
        <Feedback />
-       
-
-      
-      <CTA />
-      
-     
-     
       
       {/* Contact Us Section */}
       <ContactUs />
