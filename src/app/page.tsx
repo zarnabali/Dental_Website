@@ -9,7 +9,7 @@ import Blogs from "@/components/Blogs";
 import Teams from "@/components/Teams";
 import Feedback from "@/components/Feedback";
 import CTA from "@/components/CTA";
-import FAQs from "@/components/FAQs";
+
 import ContactUs from "@/components/ContactUs";
 import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
@@ -26,16 +26,17 @@ export default function Home() {
       
      
       
-      <AboutUs />
+      
 
+       {/* Services Section */}
+       <Services />
+
+       
        {/* Before After Section */}
        <BeforeAfterSection />
        
-       {/* Services Section */}
-       <Services />
        
-       {/* Why Choose Us Section */}
-       <WhyChooseUs />
+       
        
        {/* Featured In Section */}
        <FeaturedIn />
@@ -44,10 +45,9 @@ export default function Home() {
        <Teams />
        
        <Feedback />
-       <FAQs />
+       
 
-       {/* Blogs Section */}
-       <Blogs />
+      
       <CTA />
       
      
@@ -55,7 +55,6 @@ export default function Home() {
       
       {/* Contact Us Section */}
       <ContactUs />
-    
       <Footer />
       <ScrollToTop />
     </div>
