@@ -1,15 +1,10 @@
 import Header from "@/components/Header";
-import VideoHero from "@/components/VideoHero";
 import BeforeAfterSection from "@/components/BeforeAfter";
-import AboutUs from "@/components/AboutUs";
 import Services from "@/components/Services";
-import WhyChooseUs from "@/components/WhyChooseUs";
 import FeaturedIn from "@/components/FeaturedIn";
-import Blogs from "@/components/Blogs";
 import Teams from "@/components/Teams";
 import Feedback from "@/components/Feedback";
 import CTA from "@/components/CTA";
-
 import ContactUs from "@/components/ContactUs";
 import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";

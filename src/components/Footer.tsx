@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { useEffect, useRef, useState } from "react"
 import { gsap } from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
-import { Instagram, Facebook, Youtube, Twitter, Phone, Mail, MapPin, Clock } from "lucide-react"
+import { Instagram, Facebook, Phone, Mail, MapPin, Clock } from "lucide-react"
 import { api } from "@/lib/api"
 
 gsap.registerPlugin(ScrollTrigger)
@@ -24,7 +24,10 @@ export default function Footer() {
   const [services, setServices] = useState<Array<{ 
     _id: string; 
     cardInfo?: { title?: string; description?: string; image?: { url?: string } };
-    serviceBlog?: any;
+    serviceBlog?: {
+      heroImage?: { public_id?: string; url?: string };
+      content?: Array<{ type?: string; content?: string }>;
+    };
     isActive?: boolean;
   }>>([])
   const [clinicInfo, setClinicInfo] = useState({
@@ -60,12 +63,22 @@ export default function Footer() {
           
           if (servicesResponse.success && servicesResponse.data && Array.isArray(servicesResponse.data)) {
             // Filter only active services that have cardInfo with title
-            const activeServices = servicesResponse.data
-              .filter((service: { isActive?: boolean; cardInfo?: { title?: string } }) => 
+            type ServiceItem = {
+              _id: string;
+              cardInfo?: { title?: string; description?: string; image?: { url?: string } };
+              serviceBlog?: {
+                heroImage?: { public_id?: string; url?: string };
+                content?: Array<{ type?: string; content?: string }>;
+              };
+              isActive?: boolean;
+            };
+            
+            const activeServices = (servicesResponse.data as ServiceItem[])
+              .filter((service: ServiceItem) => 
                 service.isActive !== false && service.cardInfo?.title
               )
               .slice(0, 6) // Limit to 6 services for footer
-              .map((service: any) => service) // Keep full service object for navigation
+              .map((service: ServiceItem) => service) // Keep full service object for navigation
             
             console.log('Setting services data:', activeServices)
             setServices(activeServices)
