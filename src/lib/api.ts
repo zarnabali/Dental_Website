@@ -88,6 +88,9 @@ export const apiEndpoints = {
   
   // Blogs
   getBlogs: () => axiosInstance.get('/api/blogs'),
+  
+  // Results (Before/After) - public API, filter by active only
+  getResults: () => axiosInstance.get('/api/results?active=true'),
 };
 
 // Wrapper functions that match the original API structure
@@ -159,6 +162,12 @@ export const api = {
   // Blogs
   getBlogs: async () => {
     const response = await apiEndpoints.getBlogs();
+    return response.data;
+  },
+  
+  // Results (Before/After)
+  getResults: async () => {
+    const response = await apiEndpoints.getResults();
     return response.data;
   },
 };

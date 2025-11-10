@@ -4,10 +4,13 @@ import Link from "next/link"
 import Image from "next/image"
 import { Search, ShoppingBag, Menu, X } from 'lucide-react'
 import { useState, useEffect } from "react"
+import { useRouter, usePathname } from "next/navigation"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
 
 export default function Header() {
+  const router = useRouter()
+  const pathname = usePathname()
   const [isOpen, setIsOpen] = useState(false)
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [isNavSticky, setIsNavSticky] = useState(false)
@@ -36,6 +39,110 @@ export default function Header() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  // Navigation helper function that works from any page
+  const navigateToSection = (sectionId: string) => {
+    // Check if we're on the home page
+    if (pathname === '/') {
+      // On home page, just scroll to section with offset for sticky header
+      requestAnimationFrame(() => {
+        const section = document.getElementById(sectionId)
+        if (section) {
+          const headerOffset = 80
+          const elementPosition = section.getBoundingClientRect().top
+          const offsetPosition = elementPosition + window.pageYOffset - headerOffset
+
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          })
+        }
+      })
+    } else {
+      // On other pages, use Next.js router for smooth client-side navigation with hash
+      // Store section ID before navigation for reliable scrolling
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem('pendingScrollSection', sectionId)
+        // Use router.push with hash - Next.js will handle the navigation smoothly
+        router.push(`/#${sectionId}`)
+      }
+    }
+  }
+
+  // Handle hash navigation and section scrolling after page load
+  useEffect(() => {
+    if (pathname !== '/') return
+
+    const scrollToSection = (sectionId: string, attempt = 0): boolean => {
+      if (!sectionId) return false
+      
+      const section = document.getElementById(sectionId)
+      if (section) {
+        // Small delay to ensure page is stable
+        setTimeout(() => {
+          // Account for sticky header offset
+          const headerOffset = 80
+          const elementPosition = section.getBoundingClientRect().top
+          const offsetPosition = elementPosition + window.pageYOffset - headerOffset
+
+          window.scrollTo({
+            top: Math.max(0, offsetPosition),
+            behavior: 'smooth'
+          })
+        }, 50)
+        return true
+      } else if (attempt < 20) {
+        // If section not found, try again (max 20 attempts = 2 seconds)
+        setTimeout(() => scrollToSection(sectionId, attempt + 1), 100)
+        return false
+      }
+      return false
+    }
+
+    const handleScrollToSection = () => {
+      // Priority 1: Check sessionStorage for pending scroll (from navigateToSection)
+      const pendingSection = typeof window !== 'undefined' ? sessionStorage.getItem('pendingScrollSection') : null
+      if (pendingSection) {
+        sessionStorage.removeItem('pendingScrollSection')
+        // Wait a bit for the route to settle
+        requestAnimationFrame(() => {
+          setTimeout(() => scrollToSection(pendingSection), 100)
+        })
+        return
+      }
+
+      // Priority 2: Check hash in URL
+      const hash = typeof window !== 'undefined' ? window.location.hash.replace('#', '') : ''
+      if (hash) {
+        requestAnimationFrame(() => {
+          setTimeout(() => scrollToSection(hash), 150)
+        })
+      }
+    }
+
+    // Wait for page to be ready and DOM to be fully rendered
+    if (typeof window !== 'undefined') {
+      // Use multiple strategies to ensure we catch the navigation
+      // Strategy 1: Immediate check after mount
+      const timer1 = setTimeout(handleScrollToSection, 150)
+      
+      // Strategy 2: Check after a longer delay (for slower renders)
+      const timer2 = setTimeout(handleScrollToSection, 300)
+
+      // Strategy 3: Listen for hash changes (browser back/forward)
+      window.addEventListener('hashchange', handleScrollToSection)
+      
+      // Strategy 4: Listen for popstate (browser navigation)
+      window.addEventListener('popstate', handleScrollToSection)
+      
+      return () => {
+        clearTimeout(timer1)
+        clearTimeout(timer2)
+        window.removeEventListener('hashchange', handleScrollToSection)
+        window.removeEventListener('popstate', handleScrollToSection)
+      }
+    }
+  }, [pathname]) // Re-run when pathname changes to home page
+
   return (
     <header className="w-full font-almarai">
       {/* Top Announcement Bar - Full Width, No Padding */}
@@ -51,7 +158,7 @@ export default function Header() {
         <div className="flex-shrink-0">
           <Link href="/" className="flex items-center">
             <Image
-              src="/logo2.png"
+              src="/1.png"
               alt="Dr. Samiullah Dental Clinic"
               width={180}
               height={60}
@@ -64,43 +171,39 @@ export default function Header() {
         {/* Desktop Navigation Links - Right Side */}
         <div className="hidden lg:flex items-center space-x-8">
           <button
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="text-gray-700 hover:text-blue-600 transition-colors"
+            onClick={() => {
+              if (pathname === '/') {
+                window.scrollTo({ top: 0, behavior: 'smooth' })
+              } else {
+                router.push('/')
+              }
+            }}
+            className="text-gray-700 hover:text-[#963f36] transition-colors duration-200"
           >
             Home
           </button>
           <button
-            onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-            className="text-gray-700 hover:text-[#74886f] transition-colors"
+            onClick={() => navigateToSection('cta')}
+            className="text-gray-700 hover:text-[#963f36] transition-colors duration-200"
           >
             About Us
           </button>
           <button
-            onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-            className="text-gray-700 hover:text-[#74886f] transition-colors"
+            onClick={() => navigateToSection('services')}
+            className="text-gray-700 hover:text-[#963f36] transition-colors duration-200"
           >
             Services
           </button>
+        
           <button
-            onClick={() => document.getElementById('blogs')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-            className="text-gray-700 hover:text-[#74886f] transition-colors"
-          >
-            Blogs
-          </button>
-          <Link
-            href="/contact"
-            className="text-gray-700 hover:text-[#74886f] transition-colors"
+            onClick={() => navigateToSection('contact')}
+            className="text-gray-700 hover:text-[#963f36] transition-colors duration-200"
           >
             Contact
-          </Link>
+          </button>
           <Button 
             className="bg-[#963f36] text-white px-6 py-2 rounded-lg hover:bg-[#9e6058] transition-colors font-helvetica font-regular"
-            onClick={() => {
-              const contactSection = document.getElementById('contact');
-              if (contactSection) {
-                contactSection.scrollIntoView({ behavior: 'smooth' });
-              }
-            }}
+            onClick={() => navigateToSection('contact')}
           >
             GIVE FEEDBACK
           </Button>
@@ -149,39 +252,46 @@ export default function Header() {
               <nav className="flex-1 p-6">
                 <div className="flex flex-col space-y-6">
                   <button 
-                    className="text-left text-xl text-gray-700 hover:text-blue-600 transition-colors py-2 border-b border-gray-100" 
-                    onClick={() => { setIsOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }) }}
+                    className="text-left text-xl text-gray-700 hover:text-[#963f36] transition-colors duration-200 py-2 border-b border-gray-100" 
+                    onClick={() => { 
+                      setIsOpen(false)
+                      if (pathname === '/') {
+                        window.scrollTo({ top: 0, behavior: 'smooth' })
+                      } else {
+                        router.push('/')
+                      }
+                    }}
                   >
                     Home
                   </button>
-                  <Link 
-                    href="#about" 
-                    className="text-xl text-gray-700 hover:text-blue-600 transition-colors py-2 border-b border-gray-100" 
-                    onClick={(e) => { e.preventDefault(); setIsOpen(false); document.getElementById('about')?.scrollIntoView({ behavior: 'smooth', block: 'start' }) }}
+                  <button 
+                    className="text-left text-xl text-gray-700 hover:text-[#963f36] transition-colors duration-200 py-2 border-b border-gray-100" 
+                    onClick={() => { 
+                      setIsOpen(false)
+                      navigateToSection('cta')
+                    }}
                   >
                     About Us
-                  </Link>
-                  <Link 
-                    href="#services" 
-                    className="text-xl text-gray-700 hover:text-blue-600 transition-colors py-2 border-b border-gray-100" 
-                    onClick={(e) => { e.preventDefault(); setIsOpen(false); document.getElementById('services')?.scrollIntoView({ behavior: 'smooth', block: 'start' }) }}
+                  </button>
+                  <button 
+                    className="text-left text-xl text-gray-700 hover:text-[#963f36] transition-colors duration-200 py-2 border-b border-gray-100" 
+                    onClick={() => { 
+                      setIsOpen(false)
+                      navigateToSection('services')
+                    }}
                   >
                     Services
-                  </Link>
-                  <Link 
-                    href="#blogs" 
-                    className="text-xl text-gray-700 hover:text-blue-600 transition-colors py-2 border-b border-gray-100" 
-                    onClick={(e) => { e.preventDefault(); setIsOpen(false); document.getElementById('blogs')?.scrollIntoView({ behavior: 'smooth', block: 'start' }) }}
-                  >
-                    Blogs
-                  </Link>
-                  <Link 
-                    href="/contact" 
-                    className="text-xl text-gray-700 hover:text-blue-600 transition-colors py-2 border-b border-gray-100" 
-                    onClick={() => setIsOpen(false)}
+                  </button>
+                 
+                  <button 
+                    className="text-left text-xl text-gray-700 hover:text-[#963f36] transition-colors duration-200 py-2 border-b border-gray-100" 
+                    onClick={() => { 
+                      setIsOpen(false)
+                      navigateToSection('contact')
+                    }}
                   >
                     Contact
-                  </Link>
+                  </button>
                 </div>
               </nav>
               

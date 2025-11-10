@@ -102,7 +102,7 @@ export default function CTA() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="py-12 md:py-20 px-2 md:px-4" style={{ backgroundColor: "#963f36" }}>
+    <section ref={sectionRef} id="cta" className="py-12 md:py-20 px-2 md:px-4" style={{ backgroundColor: "white" }}>
       <div className="max-w-7xl mx-auto">
         <div className="relative">
           {/* Main container with border that will intersect the title */}
@@ -110,83 +110,43 @@ export default function CTA() {
             ref={containerRef}
             className="relative pt-16 md:pt-20 pb-6 md:pb-8 px-4 md:px-8 lg:px-12 rounded-2xl md:rounded-3xl"
             style={{
-              backgroundColor: "#963f36",
-              border: "2px solid rgba(255, 255, 255, 0.6)",
+              backgroundColor: "white",
+              border: "3px solid rgba(150, 63, 54, 0.6)",
             }}
           >
             {/* Title positioned to intersect with the border */}
             <div className="absolute -top-6 md:-top-8 left-1/2 transform -translate-x-1/2 z-20">
               <h2
-                className="text-2xl md:text-4xl lg:text-5xl font-light text-white text-balance px-6 md:px-12 py-3 md:py-4 rounded-full whitespace-nowrap"
-                style={{ backgroundColor: "#963f36" }}
+                className="text-2xl md:text-4xl lg:text-5xl font-light text-black text-balance px-6 md:px-12 py-3 md:py-4 rounded-full whitespace-nowrap"
+                style={{ backgroundColor: "white" }}
               >
-                Ready to Transform Your Smile?
+                Welcome to Dr. Samiullah Dental Clinic
               </h2>
             </div>
 
             {/* Content */}
             <div ref={contentRef} className="text-center">
-              <p className="text-white text-lg md:text-xl mb-8 max-w-3xl mx-auto opacity-90">
-                Don&apos;t wait to achieve the healthy, beautiful smile you deserve. 
-                Book your appointment today and take the first step towards better oral health.
+              <p className="text-lg md:text-xl mb-8 max-w-3xl mx-auto opacity-90 text-gray-600" >
+                Providing exceptional dental care with modern technology and personalized treatment. 
+                We are dedicated to helping you achieve a healthy, beautiful smile through compassionate, 
+                professional dental services tailored to your unique needs.
               </p>
               
-              {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-                <button 
-                  className="px-8 py-4 rounded-full font-medium text-lg transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
-                  style={{ 
-                    backgroundColor: "white", 
-                    color: "#963f36"
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = "transparent";
-                    e.currentTarget.style.color = "white";
-                    e.currentTarget.style.borderColor = "white";
-                    e.currentTarget.style.borderWidth = "2px";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = "white";
-                    e.currentTarget.style.color = "#963f36";
-                    e.currentTarget.style.borderWidth = "0px";
-                  }}
-                >
-                  Book Appointment Now
-                </button>
-                <button 
-                  className="px-8 py-4 rounded-full font-medium text-lg transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
-                  style={{ 
-                    borderColor: "white", 
-                    color: "white",
-                    backgroundColor: "transparent",
-                    borderWidth: "2px"
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = "white";
-                    e.currentTarget.style.color = "#963f36";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = "transparent";
-                    e.currentTarget.style.color = "white";
-                  }}
-                >
-                  Call Us: (123) 456-7890
-                </button>
-              </div>
+            
               
               {/* Stats Grid */}
               <div className="grid md:grid-cols-3 gap-8 text-center">
-                <div className="text-white">
+                <div style={{ color: "#963f36" }}>
                   <div className="text-4xl md:text-5xl font-light mb-2">{stats.experience}</div>
-                  <div className="text-white/80 text-sm md:text-base font-light tracking-wider uppercase">Years Experience</div>
+                  <div className="text-sm md:text-base font-light tracking-wider uppercase" style={{ color: "rgba(150, 63, 54, 0.8)" }}>Years Experience</div>
                 </div>
-                <div className="text-white">
+                <div style={{ color: "#963f36" }}>
                   <div className="text-4xl md:text-5xl font-light mb-2">{stats.patients}</div>
-                  <div className="text-white/80 text-sm md:text-base font-light tracking-wider uppercase">Happy Patients</div>
+                  <div className="text-sm md:text-base font-light tracking-wider uppercase" style={{ color: "rgba(150, 63, 54, 0.8)" }}>Happy Patients</div>
                 </div>
-                <div className="text-white">
+                <div style={{ color: "#963f36" }}>
                   <div className="text-4xl md:text-5xl font-light mb-2">{stats.emergency}</div>
-                  <div className="text-white/80 text-sm md:text-base font-light tracking-wider uppercase">Emergency Care</div>
+                  <div className="text-sm md:text-base font-light tracking-wider uppercase" style={{ color: "rgba(150, 63, 54, 0.8)" }}>Emergency Care</div>
                 </div>
               </div>
             </div>

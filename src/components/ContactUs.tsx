@@ -29,22 +29,18 @@ export default function ContactUs() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [clinicInfo, setClinicInfo] = useState({
-    name: "Dr. Samiullah Dental Clinic",
+    name: "",
     location1: {
-      address: "123 Dental Street, Medical District, City 12345",
-      url: "https://maps.google.com/?q=123+Dental+Street+Medical+District+City+12345"
+      address: "",
+      url: ""
     },
     location2: {
-      address: "456 Second Street, Medical District, City 12345",
-      url: "https://maps.google.com/?q=456+Second+Street+Medical+District+City+12345"
+      address: "",
+      url: ""
     },
-    phone: "(123) 456-7890",
-    email: "info@drsamiullah.com",
-    hours: {
-      weekdays: "Mon - Fri: 9:00 AM - 6:00 PM",
-      saturday: "Sat: 9:00 AM - 2:00 PM",
-      sunday: "Sun: Emergency Only"
-    }
+    phone: "",
+    email: "",
+    timings: ""
   });
   const [loading, setLoading] = useState(true);
 
@@ -63,50 +59,26 @@ export default function ContactUs() {
         if (response.success && response.data) {
           const data = response.data
           const clinicData = {
-            name: data.name || "Dr. Samiullah Dental Clinic",
+            name: data.name || "",
             location1: {
-              address: data.location1?.description || "123 Dental Street, Medical District, City 12345",
-              url: data.location1?.url || "https://maps.google.com/?q=123+Dental+Street+Medical+District+City+12345"
+              address: data.location1?.description || "",
+              url: data.location1?.url || ""
             },
             location2: {
-              address: data.location2?.description || "456 Second Street, Medical District, City 12345",
-              url: data.location2?.url || "https://maps.google.com/?q=456+Second+Street+Medical+District+City+12345"
+              address: data.location2?.description || "",
+              url: data.location2?.url || ""
             },
-            phone: data.phoneNumber || "(123) 456-7890",
-            email: data.email || "info@drsamiullah.com",
-            hours: {
-              weekdays: "Mon - Fri: 9:00 AM - 6:00 PM",
-              saturday: "Sat: 9:00 AM - 2:00 PM",
-              sunday: "Sun: Emergency Only"
-            }
+            phone: data.phoneNumber || "",
+            email: data.email || "",
+            timings: data.timings || ""
           }
           console.log('Setting clinic info:', clinicData)
           setClinicInfo(clinicData)
         } else {
-          console.log('No clinic info data, using fallback')
-          setClinicInfo({
-            name: "Dr. Samiullah Dental Clinic",
-            location1: {
-              address: "123 Dental Street, Medical District, City 12345",
-              url: "https://maps.google.com/?q=123+Dental+Street+Medical+District+City+12345"
-            },
-            location2: {
-              address: "456 Second Street, Medical District, City 12345",
-              url: "https://maps.google.com/?q=456+Second+Street+Medical+District+City+12345"
-            },
-            phone: "(123) 456-7890",
-            email: "info@drsamiullah.com",
-            hours: {
-              weekdays: "Mon - Fri: 9:00 AM - 6:00 PM",
-              saturday: "Sat: 9:00 AM - 2:00 PM",
-              sunday: "Sun: Emergency Only"
-            }
-          })
+          console.log('No clinic info data available')
         }
       } catch (error) {
         console.error('Error fetching clinic info:', error)
-        console.log('Using fallback clinic info')
-        // Keep fallback data
       } finally {
         setLoading(false)
       }
@@ -372,12 +344,20 @@ export default function ContactUs() {
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "#963f36" }}>
                   <Clock className="w-6 h-6 text-white" />
                 </div>
-                <div>
+                <div className="flex-1">
                   <h4 className="text-lg font-medium text-black mb-2">Hours</h4>
-                  <div className="text-gray-700 space-y-1">
-                    <p>{clinicInfo.hours.weekdays}</p>
-                    <p>{clinicInfo.hours.saturday}</p>
-                    <p>{clinicInfo.hours.sunday}</p>
+                  <div className="text-gray-700">
+                    {clinicInfo.timings ? (
+                      <div className="whitespace-pre-line leading-relaxed">
+                        {clinicInfo.timings.split('\n').map((line, index) => (
+                          <p key={index} className={index > 0 ? 'mt-1' : ''}>
+                            {line.trim()}
+                          </p>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-gray-500">Hours not available</p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -515,77 +495,7 @@ export default function ContactUs() {
           </div>
         </div>
 
-        {/* Google Maps Section */}
-        <div ref={mapRef} className="mt-16">
-          <div className="text-center mb-8">
-            <h3 className="text-2xl md:text-3xl font-normal mb-4" style={{ color: "#74886f" }}>
-              Find Our Clinics
-            </h3>
-            <p className="text-gray-700 max-w-2xl mx-auto">
-              We have two convenient locations in the medical district, both easily accessible by car or public transportation.
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Location 1 Map */}
-            <div className="space-y-4">
-              <h4 className="text-xl font-medium text-black text-center">Main Branch</h4>
-              <div className="rounded-2xl overflow-hidden shadow-lg border border-gray-200">
-                <iframe
-                  src={clinicInfo.location1.url.replace('https://maps.google.com/?q=', 'https://www.google.com/maps/embed/v1/place?key=YOUR_API_KEY&q=')}
-                  width="100%"
-                  height="300"
-                  style={{ border: 0 }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title="Dr. Samiullah Dental Clinic - Main Branch"
-                />
-              </div>
-              <div className="text-center">
-                <a
-                  href={clinicInfo.location1.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center space-x-2 px-4 py-2 rounded-lg text-white font-medium transition-all duration-300 hover:opacity-90"
-                  style={{ backgroundColor: "#74886f" }}
-                >
-                  <MapPin className="w-4 h-4" />
-                  <span>Open Main Branch in Maps</span>
-                </a>
-              </div>
-            </div>
-
-            {/* Location 2 Map */}
-            <div className="space-y-4">
-              <h4 className="text-xl font-medium text-black text-center">Second Branch</h4>
-              <div className="rounded-2xl overflow-hidden shadow-lg border border-gray-200">
-                <iframe
-                  src={clinicInfo.location2.url.replace('https://maps.google.com/?q=', 'https://www.google.com/maps/embed/v1/place?key=YOUR_API_KEY&q=')}
-                  width="100%"
-                  height="300"
-                  style={{ border: 0 }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title="Dr. Samiullah Dental Clinic - Second Branch"
-                />
-              </div>
-              <div className="text-center">
-                <a
-                  href={clinicInfo.location2.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center space-x-2 px-4 py-2 rounded-lg text-white font-medium transition-all duration-300 hover:opacity-90"
-                  style={{ backgroundColor: "#74886f" }}
-                >
-                  <MapPin className="w-4 h-4" />
-                  <span>Open Second Branch in Maps</span>
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
+      
       </div>
     </section>
   );

@@ -25,7 +25,7 @@ export default function Home() {
       </div>
       
      
-      
+      <CTA />
       
 
        {/* Services Section */}
@@ -45,6 +45,7 @@ export default function Home() {
        <Teams />
        
        <Feedback />
+       
       
       {/* Contact Us Section */}
       <ContactUs />

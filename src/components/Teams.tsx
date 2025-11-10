@@ -30,21 +30,21 @@ export default function Teams() {
       id: 1,
       name: "Dr. Samiullah",
       position: "Chief Dental Surgeon",
-      image: "/dr_sami.jpg",
+      image: "",
       specialty: "General & Cosmetic Dentistry"
     },
     {
       id: 2,
       name: "Dr. Sarah Johnson",
       position: "Orthodontist",
-      image: "/team/sarah.jpg",
+      image: "",
       specialty: "Braces & Aligners"
     },
     {
       id: 3,
       name: "Dr. Michael Chen",
       position: "Oral Surgeon",
-      image: "/team/michael.jpg",
+      image: "",
       specialty: "Dental Implants"
     },
   ])
@@ -62,14 +62,38 @@ export default function Teams() {
         console.log('Team response:', response)
         
         if (response.success && response.data && response.data.length > 0) {
-          const teamData = response.data.map((item: { id: number; name: string; position: string; image: string; bio?: string; experience?: string; education?: string[]; designation?: string; speciality?: string }, index: number) => ({
-            id: index + 1,
-            name: item.name || "Team Member",
-            position: item.designation || item.position || "Dental Professional",
-            image: item.image || "/dr_sami.jpg",
-            specialty: item.speciality || "General Dentistry"
-          }))
+          const teamData = response.data.map((item: { 
+            _id?: string;
+            id?: number; 
+            name: string; 
+            position?: string; 
+            image: string | { public_id?: string; url: string } | undefined; 
+            bio?: string; 
+            experience?: string; 
+            education?: string[]; 
+            designation?: string; 
+            speciality?: string 
+          }, index: number) => {
+            // Extract image URL - handle both string and object formats
+            let imageUrl = "/dr_sami.jpg"; // default fallback
+            if (item.image) {
+              if (typeof item.image === 'string') {
+                imageUrl = item.image;
+              } else if (typeof item.image === 'object' && item.image.url) {
+                imageUrl = item.image.url;
+              }
+            }
+            
+            return {
+              id: index + 1,
+              name: item.name || "Team Member",
+              position: item.designation || item.position || "Dental Professional",
+              image: imageUrl,
+              specialty: item.speciality || "General Dentistry"
+            };
+          })
           console.log('Setting team data:', teamData)
+          console.log('Raw API response data:', response.data)
           setTeamMembers(teamData)
         } else {
           console.log('No team data, using fallback')
@@ -229,11 +253,14 @@ export default function Teams() {
               {/* Background Image */}
               <div className="absolute inset-0">
                 <img
-                  src={member.image}
+                  src={member.image || "/dr_sami.jpg"}
                   alt={member.name}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 will-change-transform"
                   onError={(e) => {
-                    e.currentTarget.src = "/dr_sami.jpg"
+                    console.error(`Failed to load image for ${member.name}:`, member.image)
+                    if (e.currentTarget.src !== "/dr_sami.jpg") {
+                      e.currentTarget.src = "/dr_sami.jpg"
+                    }
                   }}
                 />
                 {/* Overlay */}
