@@ -98,7 +98,7 @@ export default function FeaturedIn() {
         <div ref={titleRef} className="flex items-center gap-6 mb-10 md:mb-12">
           <div className="h-px flex-1" style={{ backgroundColor: "#e6e0da" }}></div>
           <div className="text-xs md:text-sm tracking-[0.3em] uppercase font-medium" style={{ color: "#6e3b35" }}>
-            Featured In
+          Companies On Our Panel
           </div>
           <div className="h-px flex-1" style={{ backgroundColor: "#e6e0da" }}></div>
         </div>

@@ -189,40 +189,7 @@ export default function Footer() {
               Providing exceptional dental care with modern technology and personalized treatment for your perfect smile.
             </p>
             
-            {/* Newsletter */}
-            <div ref={newsletterRef}>
-              <h4 className="text-sm font-medium text-gray-800 mb-3 tracking-wider uppercase">
-                Stay Updated
-              </h4>
-              <div className="flex w-full max-w-sm">
-                <Input 
-                  type="email" 
-                  placeholder="Your email address" 
-                  className="flex-grow rounded-r-none bg-white text-sm border-gray-300 focus:border-gray-400" 
-                />
-                <Button 
-                  className="rounded-l-none px-4 text-sm font-medium transition-all duration-300 hover:scale-105"
-                  style={{ 
-                    backgroundColor: "#963f36", 
-                    color: "white",
-                    border: "none"
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = "white";
-                    e.currentTarget.style.color = "#963f36";
-                    e.currentTarget.style.borderColor = "#963f36";
-                    e.currentTarget.style.borderWidth = "1px";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = "#963f36";
-                    e.currentTarget.style.color = "white";
-                    e.currentTarget.style.borderWidth = "0px";
-                  }}
-                >
-                  Subscribe
-                </Button>
-              </div>
-            </div>
+            
           </div>
 
           {/* Services */}
