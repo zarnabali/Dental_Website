@@ -2,10 +2,9 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import { Search, ShoppingBag, Menu, X } from 'lucide-react'
+import { Menu, X } from 'lucide-react'
 import { useState, useEffect } from "react"
 import { useRouter, usePathname } from "next/navigation"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
 
 export default function Header() {

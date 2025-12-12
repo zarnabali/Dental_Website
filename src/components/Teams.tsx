@@ -48,7 +48,6 @@ export default function Teams() {
       specialty: "Dental Implants"
     },
   ])
-  const [loading, setLoading] = useState(true)
   const [teamPicture, setTeamPicture] = useState<TeamPicture | null>(null)
   const [teamPictureLoading, setTeamPictureLoading] = useState(true)
 
@@ -56,7 +55,6 @@ export default function Teams() {
   useEffect(() => {
     const fetchTeamMembers = async () => {
       try {
-        setLoading(true)
         console.log('Fetching team members from API...')
         const response = await api.getTeam()
         console.log('Team response:', response)
@@ -125,8 +123,6 @@ export default function Teams() {
         console.error('Error fetching team members:', error)
         console.log('Using fallback team data')
         // Keep fallback data
-      } finally {
-        setLoading(false)
       }
     }
 

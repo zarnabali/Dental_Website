@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { api } from "@/lib/api";
@@ -101,10 +101,6 @@ export default function PatientFeedback() {
     fetchFeedback()
   }, [])
 
-  const showTestimonial = (index: number) => {
-    setCurrentSlide(index);
-  };
-
   const nextTestimonial = () => {
     setDirection(1);
     setCurrentSlide((prev) => (prev + 1) % testimonials.length);
@@ -115,15 +111,15 @@ export default function PatientFeedback() {
     setCurrentSlide((prev) => (prev - 1 + testimonials.length) % testimonials.length);
   };
 
-  const startAutoSlide = () => {
+  const startAutoSlide = useCallback(() => {
     if (autoSlideIntervalRef.current) {
       clearInterval(autoSlideIntervalRef.current);
     }
     autoSlideIntervalRef.current = setInterval(() => {
       setDirection(1);
-      nextTestimonial();
+      setCurrentSlide((prev) => (prev + 1) % testimonials.length);
     }, 2500);
-  };
+  }, [testimonials.length]);
 
   const stopAutoSlide = () => {
     if (autoSlideIntervalRef.current) {
@@ -135,7 +131,7 @@ export default function PatientFeedback() {
   useEffect(() => {
     startAutoSlide();
     return () => stopAutoSlide();
-  }, []);
+  }, [startAutoSlide]);
 
   useEffect(() => {
     if (

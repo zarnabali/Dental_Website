@@ -18,13 +18,11 @@ export default function FeaturedIn() {
     { id: 4, name: "Spa & Beauty", src: "/partners/p4.png" },
     { id: 5, name: "WEHO Times", src: "/partners/p5.png" },
   ])
-  const [loading, setLoading] = useState(true)
 
   // Fetch partners from API
   useEffect(() => {
     const fetchPartners = async () => {
       try {
-        setLoading(true)
         console.log('Fetching partners from API...')
         const response = await api.getPartners()
         console.log('Partners response:', response)
@@ -51,8 +49,6 @@ export default function FeaturedIn() {
         console.error('Error fetching partners:', error)
         console.log('Using fallback partners data')
         // Keep fallback data
-      } finally {
-        setLoading(false)
       }
     }
 

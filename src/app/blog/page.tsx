@@ -2,7 +2,7 @@
 
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { useRef, useEffect, useState, Suspense } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 
 type BlogData = {
@@ -38,7 +38,6 @@ type BlogData = {
 };
 
 function BlogContent() {
-  const iframeRef = useRef<HTMLIFrameElement>(null);
   const searchParams = useSearchParams();
   const [blogData, setBlogData] = useState<BlogData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -57,23 +56,6 @@ function BlogContent() {
     setLoading(false);
   }, [searchParams]);
 
-  const play = () => {
-    const frame = iframeRef.current;
-    if (!frame) return;
-    frame.contentWindow?.postMessage(
-      JSON.stringify({ event: "command", func: "playVideo", args: [] }),
-      "*"
-    );
-  };
-
-  const pause = () => {
-    const frame = iframeRef.current;
-    if (!frame) return;
-    frame.contentWindow?.postMessage(
-      JSON.stringify({ event: "command", func: "pauseVideo", args: [] }),
-      "*"
-    );
-  };
 
   if (loading) {
     return (

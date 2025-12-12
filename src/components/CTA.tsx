@@ -16,13 +16,11 @@ export default function CTA() {
     patients: "1000+",
     emergency: "24/7"
   });
-  const [loading, setLoading] = useState(true);
 
   // Fetch clinic info for stats
   useEffect(() => {
     const fetchClinicInfo = async () => {
       try {
-        setLoading(true)
         console.log('Fetching clinic info for stats from API...')
         const response = await api.getClinicInfo()
         console.log('Clinic info response for stats:', response)
@@ -48,8 +46,6 @@ export default function CTA() {
         console.error('Error fetching clinic info for stats:', error)
         console.log('Using fallback stats data')
         // Keep fallback data
-      } finally {
-        setLoading(false)
       }
     }
 

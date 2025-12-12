@@ -67,14 +67,12 @@ export default function Services() {
       description: "Comprehensive periodontal care for healthy gums and optimal oral health."
     }
   ]);
-  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   // Fetch services from API
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        setLoading(true)
         console.log('Fetching services from API...')
         const response = await api.getServices()
         console.log('Services response:', response)
@@ -134,8 +132,6 @@ export default function Services() {
         console.error('Error fetching services:', error)
         console.log('Using fallback services data')
         // Keep fallback data
-      } finally {
-        setLoading(false)
       }
     }
 

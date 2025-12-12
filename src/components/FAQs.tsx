@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { api } from "@/lib/api";
@@ -14,10 +14,9 @@ export default function FAQs() {
   const rightColumnRef = useRef<HTMLDivElement>(null);
   const [openIndex, setOpenIndex] = useState<number | null>(2); // Start with one item open
   const [faqs, setFaqs] = useState<{ question: string; answer: string }[]>([]);
-  const [loading, setLoading] = useState(true);
 
   // Fallback FAQs data
-  const fallbackFaqs = [
+  const fallbackFaqs = useMemo(() => [
     // Left Column
     {
       question: "What makes Dr. Samiullah's clinic different from my dentist?",
@@ -64,13 +63,12 @@ export default function FAQs() {
       question: "What happens if I have a cavity or another type of dental issue?",
       answer: "We'll address any dental issues before whitening to ensure your oral health. Small cavities can often be filled the same day, while larger issues may require separate appointments. Dr. Samiullah will create a comprehensive treatment plan tailored to your needs."
     }
-  ];
+  ], []);
 
   // Fetch FAQs from API
   useEffect(() => {
     const fetchFAQs = async () => {
       try {
-        setLoading(true)
         console.log('Fetching FAQs from API...')
         const response = await api.getFAQs()
         console.log('FAQs response:', response)
@@ -90,13 +88,11 @@ export default function FAQs() {
         console.error('Error fetching FAQs:', error)
         console.log('Using fallback FAQs data')
         setFaqs(fallbackFaqs)
-      } finally {
-        setLoading(false)
       }
     }
 
     fetchFAQs()
-  }, [])
+  }, [fallbackFaqs])
 
   useEffect(() => {
     if (

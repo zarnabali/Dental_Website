@@ -32,7 +32,6 @@ export default function Blogs() {
   const [current, setCurrent] = useState(0)
   const [visibleCount, setVisibleCount] = useState(2)
   const [blogs, setBlogs] = useState<Blog[]>([])
-  const [loading, setLoading] = useState(true)
   const router = useRouter()
 
   // Fallback blogs data
@@ -73,7 +72,6 @@ export default function Blogs() {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        setLoading(true)
         console.log('Fetching blogs from API...')
         const response = await api.getBlogs()
         console.log('Blogs response:', response)
@@ -96,8 +94,6 @@ export default function Blogs() {
         console.error('Error fetching blogs:', error)
         console.log('Using fallback blogs data')
         setBlogs(fallbackBlogs)
-      } finally {
-        setLoading(false)
       }
     }
 

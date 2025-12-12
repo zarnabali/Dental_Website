@@ -2,7 +2,7 @@
 
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { useEffect, useRef, useState, Suspense } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 
 type ServiceData = {
@@ -38,7 +38,6 @@ type ServiceData = {
 };
 
 function ServicesContent() {
-  const iframeRef = useRef<HTMLIFrameElement>(null);
   const searchParams = useSearchParams();
   const [serviceData, setServiceData] = useState<ServiceData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -57,23 +56,6 @@ function ServicesContent() {
     setLoading(false);
   }, [searchParams]);
 
-  const play = () => {
-    const frame = iframeRef.current;
-    if (!frame) return;
-    frame.contentWindow?.postMessage(
-      JSON.stringify({ event: "command", func: "playVideo", args: [] }),
-      "*"
-    );
-  };
-
-  const pause = () => {
-    const frame = iframeRef.current;
-    if (!frame) return;
-    frame.contentWindow?.postMessage(
-      JSON.stringify({ event: "command", func: "pauseVideo", args: [] }),
-      "*"
-    );
-  };
 
   if (loading) {
     return (

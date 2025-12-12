@@ -1,8 +1,6 @@
 "use client"
 
 import Link from "next/link"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
 import { useEffect, useRef, useState } from "react"
 import { gsap } from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
@@ -14,7 +12,6 @@ gsap.registerPlugin(ScrollTrigger)
 export default function Footer() {
   const footerRef = useRef<HTMLElement>(null)
   const logoRef = useRef<HTMLDivElement>(null)
-  const newsletterRef = useRef<HTMLDivElement>(null)
   const servicesRef = useRef<HTMLDivElement>(null)
   const linksRef = useRef<HTMLDivElement>(null)
   const contactRef = useRef<HTMLDivElement>(null)
